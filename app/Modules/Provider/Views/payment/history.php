@@ -188,7 +188,7 @@
                                                 <h6 class="mb-0 text-sm"><?= $invoice->sp_method ?></h6>
                                             </td>
                                             <td>
-                                                <?= get_samc_pvd_status_badge($invoice->sp_status) ?>
+                                                <h6 class="mb-0 text-sm"><?= $invoice->sp_status ?></h6>
                                             </td>
 
                                             <!-- Replace the existing action buttons section with this updated code -->

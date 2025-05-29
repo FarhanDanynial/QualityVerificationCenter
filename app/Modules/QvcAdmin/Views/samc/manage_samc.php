@@ -57,8 +57,9 @@
                                     <button class="filter-btn btn bg-gradient-warning" data-filter="Pending Payment" style="font-size: 12px;">
                                         <i class="fas fa-spinner me-1"></i> Pending Payment
                                     </button>
-                                    <button class="filter-btn btn bg-gradient-success" data-filter="Paid" style="font-size: 12px;">
-                                        <i class="fas fa-award me-1"></i> Paid
+                                    <button class="filter-btn btn bg-gradient-success" data-filter="Awaiting Reviewer Assignment" style="font-size: 12px;">
+                                        <i class="fas fa-award me-1"></i> Awaiting Reviewer Assignment
+
                                     </button>
                                     <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
                                         <i class="fas fa-th-list me-1"></i> All
@@ -156,7 +157,7 @@
                                                         <i class="fas fa-info-circle" style="font-size: 12px;"></i>
                                                     </a>
 
-                                                    <?php if ($samc->samc_status == 'PAID' || $samc->samc_status == 'PAYMENT_APPROVED'): ?>
+                                                    <?php if ($samc->samc_status == 'PAID' || $samc->samc_status == 'AWAITING_REVIEWER_ASSIGNMENT'): ?>
                                                         <a href="<?= base_url('qvcAdmin/set_reviewed_samc/' . $samc->samc_id) ?>"
                                                             class="btn btn-sm bg-gradient-success action-icon" style="background-color: #6b7280; color: white;"
                                                             data-bs-toggle="tooltip"

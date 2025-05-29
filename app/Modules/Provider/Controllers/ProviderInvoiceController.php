@@ -389,6 +389,221 @@ class ProviderInvoiceController extends BaseController
         return redirect()->back()->with('error', 'Gagal memuat naik bukti pembayaran.');
     }
 
+
+    // Add this method to your Invoice controller
+
+    public function deleteInvoice()
+    {
+        // Check if request is POST and AJAX
+        if (!$this->request->getMethod() === 'post') {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Invalid request method.'
+                ]);
+            }
+            return redirect()->back()->with('error', 'Invalid request method.');
+        }
+
+        // Get invoice ID from POST data
+        $invoice_id = $this->request->getPost('invoice_id');
+
+        if (!$invoice_id) {
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Invoice ID is required.'
+                ]);
+            }
+            return redirect()->back()->with('error', 'Invoice ID is required.');
+        }
+
+        try {
+            // Load your models (adjust model names according to your setup)
+
+            // Get invoice details first to check if it exists and get status
+            $invoice = $this->samc_payment->find($invoice_id);
+
+            if (!$invoice) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Invoice not found.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Invoice not found.');
+            }
+
+            $allowedStatuses = ['unpaid', 'PAYMENT_PROOF_REJECTED'];
+
+            if (!in_array($invoice->sp_status, $allowedStatuses)) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Only unpaid/rejected invoices can be deleted.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Only unpaid/rejected invoices can be deleted.');
+            }
+
+
+            // Optional: Check if current user owns this invoice (add your own logic here)
+            if ($invoice->sp_pvd_id !== session()->get('user_id')) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'You do not have permission to delete this invoice.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'You do not have permission to delete this invoice.');
+            }
+
+            // Fetch SAMC ID associated with this invoice
+            $samc_items = $this->samc_payment_item
+                ->select('spi_samc_id')
+                ->where('spi_sp_id', $invoice_id)
+                ->findAll();
+
+            if (empty($samc_items)) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'No SAMC items found for this invoice.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'No SAMC items found for this invoice.');
+            }
+
+            foreach ($samc_items as $item) {
+                // Check if the SAMC item exists
+                $samc = $this->samc_model->find($item->spi_samc_id);
+                if (!$samc) {
+                    if ($this->request->isAJAX()) {
+                        return $this->response->setJSON([
+                            'success' => false,
+                            'message' => 'SAMC item not found.'
+                        ]);
+                    }
+                    return redirect()->back()->with('error', 'SAMC item not found.');
+                }
+
+                $samc_status_update = $this->samc_model->where('samc_id', $item->spi_samc_id)
+                    ->set(['samc_status' => 'PENDING_PAYMENT', 'samc_payment_status' => null])
+                    ->update();
+
+                if (!$samc_status_update) {
+                    if ($this->request->isAJAX()) {
+                        return $this->response->setJSON([
+                            'success' => false,
+                            'message' => 'Failed to update SAMC status.'
+                        ]);
+                    }
+                    return redirect()->back()->with('error', 'Failed to update SAMC status.');
+                }
+            }
+
+            // Proceed to delete the invoice item
+            $invoice_item_delete = $this->samc_payment_item->where('spi_sp_id', $invoice_id)->delete();
+
+            if (!$invoice_item_delete) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Failed to delete invoice items.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Failed to delete invoice items.');
+            }
+
+            $deleted_invoice = $this->samc_payment->delete($invoice_id);
+
+            if (!$deleted_invoice) {
+                if ($this->request->isAJAX()) {
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Failed to delete invoice.'
+                    ]);
+                }
+                return redirect()->back()->with('error', 'Failed to delete invoice.');
+            }
+
+            // Success response
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Invoice deleted successfully.'
+                ]);
+            }
+
+            // Fallback for non-AJAX requests
+            return redirect()->to(base_url('provider/payment'))
+                ->with('success', 'Invoice deleted successfully.');
+        } catch (\Exception $e) {
+            // Log the error
+            log_message('error', 'Invoice deletion error: ' . $e->getMessage());
+
+            if ($this->request->isAJAX()) {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'An error occurred while deleting the invoice.'
+                ]);
+            }
+
+            return redirect()->back()->with('error', 'An error occurred while deleting the invoice.');
+        }
+    }
+
+    // Delete Payment Proof
+    public function deletePaymentProof()
+    {
+        try {
+            if ($this->request->isAJAX()) {
+                $json = $this->request->getJSON(true);
+                $invoiceId = $json['invoice_id'] ?? null;
+
+                if (!$invoiceId) {
+                    return $this->response->setJSON(['success' => false, 'message' => 'Invoice ID missing.']);
+                }
+
+                $invoice = $this->samc_payment->select('sp_prove')
+                    ->where('sp_id', $invoiceId)
+                    ->get()
+                    ->getRow();
+
+
+                if (!$invoice) {
+                    return $this->response->setJSON(['success' => false, 'message' => 'Invoice not found.']);
+                }
+
+                $filePath = FCPATH . 'uploads/payment_proof/' . $invoice->sp_prove;
+
+                // Update the DB
+                $updated = $this->samc_payment->update($invoiceId, ['sp_prove' => null]);
+
+
+                if (!$updated) {
+                    log_message('error', 'Failed to update sp_prove for invoice ID: ' . $invoiceId);
+                    return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Netha la.']);
+                }
+
+                log_message('debug', 'Deleting payment proof for invoice ID: ' . $invoice->sp_prove);
+
+                // Delete the file
+                if (file_exists($filePath) && is_file($filePath)) {
+                    unlink($filePath);
+                }
+
+                return $this->response->setJSON(['success' => true]);
+            }
+
+            return $this->response->setStatusCode(405)->setJSON(['success' => false, 'message' => 'Method not allowed']);
+        } catch (\Throwable $e) {
+            log_message('error', 'Delete Payment Proof Error: ' . $e->getMessage());
+            return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Internal Server Error.']);
+        }
+    }
+
+
     // public function upload_proof()
     // {
     //     // Check if this is an AJAX request

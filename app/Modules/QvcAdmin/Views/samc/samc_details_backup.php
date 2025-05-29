@@ -90,20 +90,20 @@
 
                         <div class="col-8">
                             <label for="field" class="form-label"><strong>Field:</strong></label>
-                            <input type="text" class="form-control" id="field" value="" readonly>
+                            <input type="text" class="form-control" id="field" value="<?= $samcData->samc_field ?>" readonly>
                         </div>
                         <div class="col-2">
                             <label for="field" class="form-label"><strong>Proforma:</strong></label>
-
-                            <i class="fas fa-file-alt text-white"></i> <!-- Icon on the left -->
-                            <span class="text-white">&nbsp;&nbsp;Proforma</span> <!-- Text on the right -->
+                            <a href="<?= base_url($samcData->samc_proforma) ?>" class="btn bg-primary w-100 d-flex align-items-center" target="_blank">
+                                <i class="fas fa-file-alt text-white"></i> <!-- Icon on the left -->
+                                <span class="text-white">&nbsp;&nbsp;Proforma</span> <!-- Text on the right -->
                             </a>
                         </div>
                         <div class="col-2">
                             <label for="field" class="form-label"><strong>Payment:</strong></label>
-
-                            <i class="fas fa-credit-card text-white"></i> <!-- Icon on the left -->
-                            <span class="text-white">&nbsp;&nbsp;Payment</span> <!-- Text on the right -->
+                            <a href="<?= base_url($samcData->samc_payment_proof) ?>" class="btn bg-success w-100 d-flex align-items-center" target="_blank">
+                                <i class="fas fa-credit-card text-white"></i> <!-- Icon on the left -->
+                                <span class="text-white">&nbsp;&nbsp;Payment</span> <!-- Text on the right -->
                             </a>
                         </div>
                     </div>
@@ -139,6 +139,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="adminRemarks" class="form-label"><strong>Admin Remarks:</strong></label>
+                        <textarea class="form-control" id="adminRemarks" rows="3" readonly><?= $samcData->samc_admin_remarks ?></textarea>
                     </div>
                 </form>
             </div>

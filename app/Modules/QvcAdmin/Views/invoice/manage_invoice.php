@@ -119,7 +119,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Assignments</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending Checking</p>
                                             <h5 class="font-weight-bolder mb-0">
 
                                             </h5>
@@ -140,7 +140,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">In Progress</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Paid</p>
                                             <h5 class="font-weight-bolder mb-0">
 
                                             </h5>
@@ -161,7 +161,7 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Completed</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Rejected</p>
                                             <h5 class="font-weight-bolder mb-0">
 
                                             </h5>
@@ -262,7 +262,10 @@
                                                 <h6 class="mb-0 text-sm"><?= $invoice->sp_amount ?></h6>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm"><?= $invoice->sp_created_at ?></h6>
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="fas fa-check-circle text-primary me-1"></i>
+                                                    <?= date('d/m/Y', strtotime($invoice->sp_created_at)) ?>
+                                                </span>
                                             </td>
                                             <td>
                                                 <?php
@@ -270,13 +273,16 @@
                                                 $tarikh_akhir = clone $tarikh_invois; // Clone it if it's a DateTime object
                                                 $tarikh_akhir->modify('+30 days');
                                                 ?>
-                                                <h6 class="mb-0 text-sm"><?= $tarikh_akhir->format('d/m/Y') ?></h6>
+                                                <span class="badge bg-light text-dark">
+                                                    <i class="fas fa-calendar-times text-danger me-1"></i>
+                                                    <?= $tarikh_akhir->format('d/m/Y') ?>
+                                                </span>
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm"><?= $invoice->sp_method ?></h6>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm"><?= $invoice->sp_status ?></h6>
+                                                <?= get_samc_admin_status_badge($invoice->sp_status) ?>
                                             </td>
 
                                             <!-- Replace the existing action buttons section with this updated code -->
@@ -285,21 +291,11 @@
                                                     <!-- check type -->
                                                     <?php if ($invoice->sp_method == 'INVOICE') : ?>
                                                         <!-- Display Invoice -->
-                                                        <a href="<?= base_url('provider/invoice/fetch_invoice_details/' . $invoice->sp_invoice_number) ?>"
+                                                        <a href="<?= base_url('qvcAdmin/invoice/fetch_invoice_details/' . $invoice->sp_invoice_number) ?>"
                                                             class="btn btn-sm bg-gradient-info action-icon"
                                                             data-bs-toggle="tooltip" title="Invoice Details">
                                                             <i class="fas fa-info-circle" style="font-size: 12px;"></i>
                                                         </a>
-
-                                                        <!-- Upload Payment Proof Button -->
-                                                        <button type="button"
-                                                            class="btn btn-sm bg-gradient-warning action-icon upload-proof-btn"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#uploadProofModal"
-                                                            data-invoice-id="<?= $invoice->sp_invoice_number ?>"
-                                                            title="Upload Payment Proof">
-                                                            <i class="fas fa-upload" style="font-size: 12px;"></i>
-                                                        </button>
                                                     <?php elseif ($invoice->sp_method == 'FPX') : ?>
                                                         <!-- Display Payment Prove -->
                                                         <a href="<?= base_url('provider/payment/checkout') ?>"
@@ -307,8 +303,6 @@
                                                             data-bs-toggle="tooltip" title="Details">
                                                             <i class="fas fa-info-circle" style="font-size: 12px;"></i>
                                                         </a>
-
-
                                                     <?php endif; ?>
                                                 </div>
                                             </td>
@@ -325,7 +319,6 @@
     </div>
 </div>
 
-<!-- Add this modal at the end of your file before the closing script tags -->
 <!-- Upload Payment Proof Modal -->
 <div class="modal fade" id="uploadProofModal" tabindex="-1" aria-labelledby="uploadProofModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">

@@ -132,13 +132,32 @@ class ProviderPaymentController extends BaseController
         // Fetch Invoice Payment details or FPX Payment details
         $invoice_info = $this->samc_payment
             ->where('sp_pvd_id', $pvd_id)
-            ->where('sp_status', 'unpaid')
+            ->whereIn('sp_status', ['unpaid', 'PENDING_CHECK', 'PAYMENT_PROOF_REJECTED'])
             ->findAll();
+
 
         $data = [
             'invoice_info' => $invoice_info
         ];
 
         $this->render_provider('payment/samc_to_be_pay', $data);
+    }
+
+    // Payment History Page
+    public function paymentHistory()
+    {
+        $pvd_id = session()->get('user_id');
+
+        // Fetch Invoice Payment details or FPX Payment details
+        $invoice_info = $this->samc_payment
+            ->where('sp_pvd_id', $pvd_id)
+            ->where('sp_status', 'PAID')
+            ->findAll();
+
+        $data = [
+            'invoice_info' => $invoice_info
+        ];
+
+        $this->render_provider('payment/history', $data);
     }
 }

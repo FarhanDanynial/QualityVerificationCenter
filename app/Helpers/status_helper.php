@@ -19,6 +19,8 @@ if (!function_exists('get_samc_admin_status_badge')) {
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="User is waiting for payment approval.">Payment Pending Approval</span>';
             case 'PAID':
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The SAMC has been paid.">Paid</span>';
+            case 'PAYMENT_PROOF_REJECTED':
+                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The document has been rejected.">Rejected</span>';
             case 'PAYMENT_APPROVED':
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The payment has been approved.">Payment Approved</span>';
             case 'AWAITING_REVIEWER_ASSIGNMENT': //REPLACED WITH PAID & PAYMENT APPROVED
@@ -81,15 +83,21 @@ if (!function_exists('get_samc_pvd_status_badge')) {
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Payment</span>';
             case 'PENDING_INVOICE_PAYMENT':
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Invoice Payment</span>';
+            case 'PENDING_CHECK':
+                return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="Provider has submit payment proof. Please validate.">Pending Payment Approval</span>';
             case 'PAYMENT_SUBMITTED':
                 return '<span class="badge bg-gradient-primary" data-bs-toggle="tooltip" title="User has submitted payment for the selected SAMC.">Payment Submitted</span>';
             case 'PAYMENT_PENDING_APPROVAL':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="User is waiting for payment approval.">Payment Pending Approval</span>';
-            case 'PAYMENT_APPROVED':
-                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The payment has been approved.">Payment Approved</span>';
+            case 'unpaid':
+                return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="Pending Payment.">Unpaid</span>';
             case 'PAID':
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The SAMC has been paid.">Paid</span>';
-            case 'AWAITING_REVIEWER_ASSIGNMENT':
+            case 'PAYMENT_PROOF_REJECTED':
+                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The document has been rejected.">Payment Rejected</span>';
+            case 'PAYMENT_APPROVED':
+                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The payment has been approved.">Payment Approved</span>';
+            case 'AWAITING_REVIEWER_ASSIGNMENT': //REPLACED WITH PAID & PAYMENT APPROVED
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="User is waiting for admin to assign a reviewer.">Awaiting Reviewer Assignment</span>';
             case 'AWAITING_REVIEWER_RESPONSE':
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="Waiting for the reviewer to accept or reject the review request.">Awaiting Reviewer Response</span>';

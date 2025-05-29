@@ -19,7 +19,10 @@ $routes->group('qvcAdmin', function ($routes) {
     });
 
     $routes->group('invoice', function ($routes) {
-        $routes->get('invoice_management',                  [QvcAdminInvoiceController::class,     'invoiceManagement']);
+        $routes->get('invoice_management',                  [QvcAdminInvoiceController::class,      'invoiceManagement']);
+        $routes->get('fetch_invoice_details/(:any)',        [QvcAdminInvoiceController::class,      'fetchInvoiceDetails/$1']);
+        $routes->get('view_invoice',                        [QvcAdminInvoiceController::class,      'viewInvoice']);
+        $routes->post('validate_invoice',                   [QvcAdminInvoiceController::class,     'validateInvoice']);
     });
 
     // Display Home Page

@@ -36,7 +36,7 @@ class CreateSamcPaymentTable extends Migration
             ],
             'sp_status' => [
                 'type' => 'VARCHAR',
-                'constraint' => 20,
+                'constraint' => 255,
                 'null' => false
             ],
             'sp_prove' => [

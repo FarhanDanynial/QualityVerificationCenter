@@ -122,6 +122,14 @@ $current = uri_string(); // e.g., 'provider/dashboard'
               </a>
             </li>
 
+            <li class="nav-item">
+              <a class="nav-link <?= strpos($current, 'provider/payment/payment_history') !== false ? 'active' : '' ?>"
+                href="<?= base_url('provider/payment/payment_history') ?>">
+                <span class="sidenav-mini-icon"> PH </span>
+                <span class="sidenav-normal"> Payment History </span>
+              </a>
+            </li>
+
           </ul>
         </div>
       </li>
