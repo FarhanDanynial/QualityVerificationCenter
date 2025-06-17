@@ -33,6 +33,7 @@ class SamcReviewModel extends Model
         'sr_content_outline_status',
         'sr_assessment',
         'sr_assessment_status',
+        'sr_review',
         'sr_review_status',
         'sr_created_at',
         'sr_updated_at',

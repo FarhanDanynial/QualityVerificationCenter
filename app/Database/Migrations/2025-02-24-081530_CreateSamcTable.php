@@ -95,6 +95,9 @@ class CreateSamcTable extends Migration
                 'type' => 'TIMESTAMP',
                 'null' => true,
             ],
+            'samc_admin_remarks' => [
+                'type' => 'TEXT',
+            ],
             'samc_created_at' => [
                 'type'    => 'TIMESTAMP',
                 'null'    => false,
@@ -111,7 +114,7 @@ class CreateSamcTable extends Migration
 
         $this->forge->addPrimaryKey('samc_id');
         $this->forge->addForeignKey('samc_pvd_id', 'auth_user', 'au_id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('samc_asr_id', 'auth_user', 'au_id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('samc_asr_id', 'assessor', 'asr_id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('samc_ef_id', 'expertise_field', 'ef_id', 'CASCADE', 'CASCADE');
         $this->forge->createTable('samc', true, ['schema' => 'qvc_upsi']);
 

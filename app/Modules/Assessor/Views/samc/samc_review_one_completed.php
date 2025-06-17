@@ -255,7 +255,7 @@
     .assessment-item-title {
         font-weight: 500;
         color: var(--text-dark);
-        margin-bottom: 8px;
+        /* margin-bottom: 8px; */
     }
 
     .assessment-options {
@@ -611,10 +611,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_samc_name) && !empty($reviews_1->sr_samc_name) ? nl2br(esc($reviews_1->sr_samc_name)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_samc_name) && !empty($reviews_1->sr_samc_name)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_samc_name)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
 
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
@@ -626,10 +628,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_mqf_level) && !empty($reviews_1->sr_mqf_level) ? nl2br(esc($reviews_1->sr_mqf_level)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_mqf_level) && !empty($reviews_1->sr_mqf_level)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_mqf_level)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
 
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
@@ -641,10 +645,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_duration_hours) && !empty($reviews_1->sr_duration_hours) ? nl2br(esc($reviews_1->sr_duration_hours)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_duration_hours) && !empty($reviews_1->sr_duration_hours)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_duration_hours)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
 
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
@@ -656,10 +662,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_teaching_methods) && !empty($reviews_1->sr_teaching_methods) ? nl2br(esc($reviews_1->sr_teaching_methods)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_teaching_methods) && !empty($reviews_1->sr_teaching_methods)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_teaching_methods)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
 
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
@@ -671,9 +679,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_academic_credits) && !empty($reviews_1->sr_academic_credits) ? nl2br(esc($reviews_1->sr_academic_credits)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
+                        <?php if (isset($reviews_1->sr_academic_credits) && !empty($reviews_1->sr_academic_credits)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_academic_credits)); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                     <div class="assessment-section">
                         <div class="assessment-section-title">2. Course Content Evaluation</div>
@@ -688,10 +698,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_synopsis) && !empty($reviews_1->sr_synopsis) ? nl2br(esc($reviews_1->sr_synopsis)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_synopsis) && !empty($reviews_1->sr_synopsis)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_synopsis)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
+
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
                                 <span>SAMC Intended Learning Outcomes</span>
@@ -702,10 +715,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_intended_learning_outcomes) && !empty($reviews_1->sr_intended_learning_outcomes) ? nl2br(esc($reviews_1->sr_intended_learning_outcomes)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_intended_learning_outcomes) && !empty($reviews_1->sr_intended_learning_outcomes)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_intended_learning_outcomes)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
+
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
                                 <span>Course Content Outline</span>
@@ -716,10 +732,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_content_outline) && !empty($reviews_1->sr_content_outline) ? nl2br(esc($reviews_1->sr_content_outline)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_content_outline) && !empty($reviews_1->sr_content_outline)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_content_outline)); ?>
+                            </div>
+                        <?php endif; ?>
+                        <hr style="border: 1px solid #ccc;">
 
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
@@ -731,10 +749,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="review-remarks p-3 bg-light rounded">
-                            <?= isset($reviews_1->sr_assessment) && !empty($reviews_1->sr_assessment) ? nl2br(esc($reviews_1->sr_assessment)) : '<em class="text-muted">No remarks provided</em>'; ?>
-                        </div>
-                        <br>
+                        <?php if (isset($reviews_1->sr_assessment) && !empty($reviews_1->sr_assessment)) : ?>
+                            <div class="review-remarks p-3 bg-light rounded">
+                                <?= nl2br(esc($reviews_1->sr_assessment)); ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="assessment-section">
@@ -743,12 +762,26 @@
                         <div class="assessment-item-header">
                             <div class="assessment-item-title">
                                 <span>Overall Result</span>
-                                <i class="fas fa-info-circle tooltip-icon" title="Your final decision on the SAMC submission"></i>
+                            </div>
+                            <div class="assessment-options">
+                                <div class="option-group">
+                                    <?php if ((isset($reviews_1->sr_review_status))): ?>
+                                        <?php if ($reviews_1->sr_review_status == 'ACCEPT'): ?>
+                                            <span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="This SAMC has been Accepted, no further action needed.">Accepted</span>
+                                        <?php endif; ?>
+                                        <?php if ($reviews_1->sr_review_status == 'ACCEPT_WITH_AMENDMENT'): ?>
+                                            <span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="This SAMC has been Accepted with amendment, please update.">Accepted With Amendment</span>
+                                        <?php endif; ?>
+                                        <?php if ($reviews_1->sr_review_status == 'RETURN'): ?>
+                                            <span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="This SAMC has been Return, please update.">Return</span>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-3">
                             <div class="review-remarks p-3 bg-light rounded">
-                                <?= isset($reviews_1->sr_review_status) && !empty($reviews_1->sr_review_status) ? nl2br(esc($reviews_1->sr_review_status)) : '<em class="text-muted">No remarks provided</em>'; ?>
+                                <?= isset($reviews_1->sr_review) && !empty($reviews_1->sr_review) ? nl2br(esc($reviews_1->sr_review)) : '<em class="text-muted">No remarks provided</em>'; ?>
                             </div>
                         </div>
                     </div>

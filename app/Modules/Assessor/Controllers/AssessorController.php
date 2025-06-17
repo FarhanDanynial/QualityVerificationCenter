@@ -61,20 +61,26 @@ class AssessorController extends BaseController
         // Dashboard Data
         $new_samc_assign = $this->samc_model
             ->where('samc_asr_id', $asr_id)
-            ->where('samc_status', 'Awaiting Confirmation')
+            ->where('samc_status', 'AWAITING_REVIEWER_RESPONSE')
             ->countAllResults();
 
         $review_in_progress = $this->samc_model
             ->where('samc_asr_id', $asr_id)
-            ->where('samc_status', 'Checking')
+            ->groupStart()
+            ->where('samc_status', 'AWAITING_REVIEWER_REVIEW')  // ✅ Use `where()` first
+            ->orWhere('samc_status', 'ACCEPT_WITH_AMENDMENT')
+            ->groupEnd()
             ->countAllResults();
 
         $completed_review = $this->samc_model
             ->where('samc_asr_id', $asr_id)
-            ->where('samc_status', 'Assessment Completed')
+            ->groupStart()
+            ->where('samc_status', 'ACCEPT')  // ✅ Use `where()` first
+            ->orWhere('samc_status', 'RETURN')
+            ->groupEnd()
             ->countAllResults();
 
-        $profit = $completed_review * 200;
+        $profit = ($completed_review +  $review_in_progress) * 1000;
 
         $data = [
             'notifications'             => $notification,
@@ -101,16 +107,20 @@ class AssessorController extends BaseController
             ->where('assessor_expertise_field.aef_asr_id', $asr_id)
             ->findAll();
 
+
         // Get SAMC assignments for the assessor where status is 'Checking' or 'Assessment Completed'
         $samc_assigned = $this->samc_model
             ->select('samc_ef_id, COUNT(*) as total')
             ->where('samc_asr_id', $asr_id)
             ->groupStart()
-            ->where('samc_status', 'Checking')
-            ->orWhere('samc_status', 'Assessment Completed')
+            ->where('samc_status', 'AWAITING_REVIEWER_REVIEW')  // ✅ Use `where()` first
+            ->orWhere('samc_status', 'ACCEPT')
+            ->orWhere('samc_status', 'ACCEPT_WITH_AMENDMENT')
+            ->orWhere('samc_status', 'RETURN')
             ->groupEnd()
             ->groupBy('samc_ef_id')
             ->findAll();
+        log_message('debug', 'SAMC query: ' . $this->samc_model->getLastQuery());
 
         // Prepare data mapping
         $samc_count_map = [];

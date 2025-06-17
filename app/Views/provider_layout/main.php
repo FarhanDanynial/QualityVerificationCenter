@@ -4,18 +4,17 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="<?= base_url() ?>assets/img/apple-icon.png">
-    <link rel="icon" type="image/png" href="<?= base_url() ?>assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="<?= base_url() ?>assets/img/logos/myqvc_logo.png">
     <title>
-        QVC UPSI
+        MyQVC@UPSI System
     </title>
-    <!-- Fonts and icons -->
+    <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
     <!-- Nucleo Icons -->
     <link href="<?= base_url() ?>assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="<?= base_url() ?>assets/css/nucleo-svg.css" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
     <link href="<?= base_url() ?>assets/css/nucleo-svg.css" rel="stylesheet" />
+
     <!-- CSS Files -->
     <link id="pagestyle" href="<?= base_url() ?>assets/css/soft-ui-dashboard.css?v=1.1.1" rel="stylesheet" />
     <!-- SweetAlert2 CDN -->
@@ -23,8 +22,6 @@
     <!-- jQuery (MUST be loaded first) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- SweetAlert2 CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Optional: Add Animate.css for better animations -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 

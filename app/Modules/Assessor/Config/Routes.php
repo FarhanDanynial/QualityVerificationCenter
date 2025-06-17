@@ -15,17 +15,20 @@ $routes->group('assessor', function ($routes) {
         $routes->get('reviewed_samc',               [AssessorSamcController::class,     'reviewed_samc']);
         $routes->post('submit_review',              [AssessorSamcController::class,     'submit_review']);
         $routes->post('save_review_as_draft',       [AssessorSamcController::class,     'saveReviewAsDraft']);
+
+        $routes->get('review_result/(:num)',        [AssessorSamcController::class,     'reviewResult/$1']);
+        $routes->get('samc_review_details',         [AssessorSamcController::class,     'samcReviewDetails']);
     });
 
-    $routes->get('dashboard',                   [AssessorController::class,     'dashboard']);
-    $routes->get('getSamcExpertiseData',        [AssessorController::class,     'getSamcExpertiseData']);
+    $routes->get('dashboard',                       [AssessorController::class,     'dashboard']);
+    $routes->get('getSamcExpertiseData',            [AssessorController::class,     'getSamcExpertiseData']);
 
-    // $routes->get('courses',                   [AssessorController::class,     'courses']);
-    // $routes->get('my_samc',            [AssessorController::class,     'my_samc']);
-    // $routes->get('history',            [AssessorController::class,     'history']);
+    // $routes->get('courses',                  [AssessorController::class,     'courses']);
+    // $routes->get('my_samc',                  [AssessorController::class,     'my_samc']);
+    // $routes->get('history',                  [AssessorController::class,     'history']);
 
     //Profile Route Groups ------------------------------------------------------------------------------------------------
-    $routes->get('profile',            [AssessorProfileController::class,     'profile']);
+    $routes->get('profile',                         [AssessorProfileController::class,     'profile']);
     $routes->post('update_profile',                 [AssessorProfileController::class,     'update_profile']);
-    $routes->post('delete_expertise',                 [AssessorProfileController::class,     'delete_expertise']);
+    $routes->post('delete_expertise',               [AssessorProfileController::class,     'delete_expertise']);
 });

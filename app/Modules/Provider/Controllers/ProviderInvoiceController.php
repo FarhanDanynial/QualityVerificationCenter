@@ -209,31 +209,18 @@ class ProviderInvoiceController extends BaseController
         ];
         $this->render_provider('payment/samc_view_invoice', $data);
     }
-    public function printInvoice()
+    public function printInvoice($invoice_id)
     {
 
         $samc_pvd_id    = $this->session->get('user_id');
-        $invoice_id     = $this->session->get('sp_id');
-        $selected_items = $this->session->get('selected_items');
+        // $selected_items = $this->session->get('selected_items');
         $total_amount   = $this->session->get('total_amount');
 
-        $item_details = [];
-
-        if (!empty($selected_items)) {
-            foreach ($selected_items as $item) {
-                // Fetch samc details based on samc_id
-                $samc_detail = $this->samc_model->where('samc_id', $item->samc_id)->first();
-
-                if ($samc_detail) {
-                    // Add item detail to array
-                    $item_details[] = [
-                        'samc_id'   => $item->samc_id,
-                        'amount'    => $item->amount,
-                        'samc_name' => $samc_detail->samc_course_name, // adjust field name as needed
-                    ];
-                }
-            }
-        }
+        $item_details = $this->samc_payment_item
+            ->select('spi_samc_id, spi_sp_id, spi_created_at, samc_course_name')
+            ->join('qvc_upsi.samc', 'samc.samc_id = samc_payment_item.spi_samc_id')
+            ->where('spi_sp_id', $invoice_id)
+            ->findAll();
 
         // fetch provider details
         $pvd_details = $this->provider_model->select('pvd_name, pvd_email, pvd_phone, pvd_address')
@@ -268,31 +255,19 @@ class ProviderInvoiceController extends BaseController
             ->setBody($mpdf->Output('', 'S')); // 'S' returns PDF as a string
     }
 
-    public function downloadInvoice()
+    public function downloadInvoice($invoice_id)
     {
 
         $samc_pvd_id    = $this->session->get('user_id');
-        $invoice_id     = $this->session->get('sp_id');
-        $selected_items = $this->session->get('selected_items');
+        // $invoice_id     = $this->session->get('sp_id');
+        // $selected_items = $this->session->get('selected_items');
         $total_amount   = $this->session->get('total_amount');
 
-        $item_details = [];
-
-        if (!empty($selected_items)) {
-            foreach ($selected_items as $item) {
-                // Fetch samc details based on samc_id
-                $samc_detail = $this->samc_model->where('samc_id', $item->samc_id)->first();
-
-                if ($samc_detail) {
-                    // Add item detail to array
-                    $item_details[] = [
-                        'samc_id'   => $item->samc_id,
-                        'amount'    => $item->amount,
-                        'samc_name' => $samc_detail->samc_course_name, // adjust field name as needed
-                    ];
-                }
-            }
-        }
+        $item_details = $this->samc_payment_item
+            ->select('spi_samc_id, spi_sp_id, spi_created_at, samc_course_name')
+            ->join('qvc_upsi.samc', 'samc.samc_id = samc_payment_item.spi_samc_id')
+            ->where('spi_sp_id', $invoice_id)
+            ->findAll();
 
         // fetch provider details
         $pvd_details = $this->provider_model->select('pvd_name, pvd_email, pvd_phone, pvd_address')
@@ -329,6 +304,11 @@ class ProviderInvoiceController extends BaseController
 
     public function submitInvoicePaymentProof()
     {
+
+        if (!$this->request->isAJAX()) {
+            return redirect()->back();
+        }
+
         // Get POST data
         $invoice_id        = $this->request->getPost('invoice_id');
         $payment_date      = $this->request->getPost('payment_date');
@@ -383,10 +363,16 @@ class ProviderInvoiceController extends BaseController
                 'sp_updated_at'         => date('Y-m-d H:i:s'),
             ]);
 
-            return redirect()->back()->with('message', 'Bukti pembayaran berjaya dimuat naik.');
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Payment proof uploaded successfully.',
+            ]);
         }
 
-        return redirect()->back()->with('error', 'Gagal memuat naik bukti pembayaran.');
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Failed to upload payment proof.',
+        ]);
     }
 
 
@@ -553,16 +539,72 @@ class ProviderInvoiceController extends BaseController
         }
     }
 
-    // Delete Payment Proof
+    // // Delete Payment Proof
+    // public function deletePaymentProof()
+    // {
+    //     try {
+    //         if ($this->request->isAJAX()) {
+    //             $json = $this->request->getJSON(true);
+    //             $invoiceId = $json['invoice_id'] ?? null;
+
+    //             if (!$invoiceId) {
+    //                 return $this->response->setJSON(['success' => false, 'message' => 'Invoice ID missing.']);
+    //             }
+
+    //             $invoice = $this->samc_payment->select('sp_prove')
+    //                 ->where('sp_id', $invoiceId)
+    //                 ->get()
+    //                 ->getRow();
+
+
+    //             if (!$invoice) {
+    //                 return $this->response->setJSON(['success' => false, 'message' => 'Invoice not found.']);
+    //             }
+
+    //             $filePath = FCPATH . 'uploads/payment_proof/' . $invoice->sp_prove;
+
+    //             // Update the DB
+    //             $updated = $this->samc_payment->update($invoiceId, ['sp_prove' => null]);
+
+
+    //             if (!$updated) {
+    //                 log_message('error', 'Failed to update sp_prove for invoice ID: ' . $invoiceId);
+    //                 return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Netha la.']);
+    //             }
+
+    //             log_message('debug', 'Deleting payment proof for invoice ID: ' . $invoice->sp_prove);
+
+    //             // Delete the file
+    //             if (file_exists($filePath) && is_file($filePath)) {
+    //                 unlink($filePath);
+    //             }
+
+    //             return $this->response->setJSON(['success' => true]);
+    //         }
+
+    //         return $this->response->setStatusCode(405)->setJSON(['success' => false, 'message' => 'Method not allowed']);
+    //     } catch (\Throwable $e) {
+    //         log_message('error', 'Delete Payment Proof Error: ' . $e->getMessage());
+    //         return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Internal Server Error.']);
+    //     }
+    // }
+
     public function deletePaymentProof()
     {
         try {
             if ($this->request->isAJAX()) {
-                $json = $this->request->getJSON(true);
-                $invoiceId = $json['invoice_id'] ?? null;
+                // Accept both raw JSON and form data fallback
+                $post = $this->request->getPost(); // 🔥 This handles form data properly
+
+                $invoiceId = $post['invoice_id'] ?? null;
 
                 if (!$invoiceId) {
-                    return $this->response->setJSON(['success' => false, 'message' => 'Invoice ID missing.']);
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Invoice ID missing.',
+                        'csrfName' => csrf_token(),
+                        'csrfHash' => csrf_hash()
+                    ]);
                 }
 
                 $invoice = $this->samc_payment->select('sp_prove')
@@ -570,9 +612,13 @@ class ProviderInvoiceController extends BaseController
                     ->get()
                     ->getRow();
 
-
                 if (!$invoice) {
-                    return $this->response->setJSON(['success' => false, 'message' => 'Invoice not found.']);
+                    return $this->response->setJSON([
+                        'success' => false,
+                        'message' => 'Invoice not found.',
+                        'csrfName' => csrf_token(),
+                        'csrfHash' => csrf_hash()
+                    ]);
                 }
 
                 $filePath = FCPATH . 'uploads/payment_proof/' . $invoice->sp_prove;
@@ -580,29 +626,117 @@ class ProviderInvoiceController extends BaseController
                 // Update the DB
                 $updated = $this->samc_payment->update($invoiceId, ['sp_prove' => null]);
 
-
                 if (!$updated) {
                     log_message('error', 'Failed to update sp_prove for invoice ID: ' . $invoiceId);
-                    return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Netha la.']);
+                    return $this->response->setStatusCode(500)->setJSON([
+                        'success' => false,
+                        'message' => 'Failed to update database.',
+                        'csrfName' => csrf_token(),
+                        'csrfHash' => csrf_hash()
+                    ]);
                 }
 
-                log_message('debug', 'Deleting payment proof for invoice ID: ' . $invoice->sp_prove);
-
                 // Delete the file
-                if (file_exists($filePath) && is_file($filePath)) {
+                if ($invoice->sp_prove && file_exists($filePath) && is_file($filePath)) {
                     unlink($filePath);
                 }
 
-                return $this->response->setJSON(['success' => true]);
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Payment proof deleted successfully.',
+                    'csrfName' => csrf_token(),
+                    'csrfHash' => csrf_hash()
+                ]);
             }
 
-            return $this->response->setStatusCode(405)->setJSON(['success' => false, 'message' => 'Method not allowed']);
+            return $this->response->setStatusCode(405)->setJSON([
+                'success' => false,
+                'message' => 'Method not allowed.',
+                'csrfName' => csrf_token(),
+                'csrfHash' => csrf_hash()
+            ]);
         } catch (\Throwable $e) {
             log_message('error', 'Delete Payment Proof Error: ' . $e->getMessage());
-            return $this->response->setStatusCode(500)->setJSON(['success' => false, 'message' => 'Internal Server Error.']);
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Internal Server Error.',
+                'csrfName' => csrf_token(),
+                'csrfHash' => csrf_hash()
+            ]);
         }
     }
 
+    public function submitInvoicePaymentProofUpdate()
+    {
+        if (!$this->request->isAJAX()) {
+            return redirect()->back();
+        }
+
+        // Get POST data
+        $invoice_id        = $this->request->getPost('invoice_id');
+        $payment_date      = $this->request->getPost('payment_date');
+        $payment_reference = $this->request->getPost('payment_reference');
+        $payment_notes     = $this->request->getPost('payment_notes');
+
+        // Get uploaded file
+        $payment_proof = $this->request->getFile('payment_proof');
+
+        if ($payment_proof && $payment_proof->isValid() && !$payment_proof->hasMoved()) {
+            // Capture original name (user uploaded)
+            $originalFileName = $payment_proof->getClientName();
+
+            // Generate a new unique name for storage
+            $storedFileName = $payment_proof->getRandomName();
+            $paymentPath = 'uploads/payment_proof/';
+            // Define the upload path (use public path if you want to access it via URL)
+            $uploadPath = FCPATH . $paymentPath;
+
+            // Create folder if it doesn't exist
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0755, true);
+            }
+
+            // Move file to destination
+            $payment_proof->move($uploadPath, $storedFileName);
+
+            // Store both names and full relative file path
+            $storedFilePath = $paymentPath . $storedFileName;
+
+            // fetch each samc id in invoice
+            $samc_items = $this->samc_payment_item
+                ->select('spi_samc_id')
+                ->where('spi_sp_id', $invoice_id)
+                ->findAll();
+            // Loop through each samc id and update status
+            foreach ($samc_items as $item) {
+                $this->samc_model->update($item->spi_samc_id, [
+                    'samc_status'           => 'PENDING_CHECK',
+                    'samc_payment_status'   => 'PENDING_CHECK',
+                    'samc_updated_date'     => date('Y-m-d H:i:s'),
+                ]);
+            }
+            // Save into database
+            $this->samc_payment->update($invoice_id, [
+                'sp_status'             => 'PENDING_CHECK',
+                'sp_prove_filename'     => $originalFileName,    // original file name
+                'sp_prove'              => $storedFilePath,      // relative or absolute path
+                'sp_reff_num'           => $payment_reference,
+                'sp_notes'              => $payment_notes,
+                'sp_payment_date'       => $payment_date,
+                'sp_updated_at'         => date('Y-m-d H:i:s'),
+            ]);
+
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Payment proof uploaded successfully.',
+            ]);
+        }
+
+        return $this->response->setJSON([
+            'success' => false,
+            'message' => 'Failed to upload payment proof.',
+        ]);
+    }
 
     // public function upload_proof()
     // {

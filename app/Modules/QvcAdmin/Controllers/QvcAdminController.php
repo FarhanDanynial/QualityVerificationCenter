@@ -3,6 +3,8 @@
 namespace App\Modules\QvcAdmin\Controllers;
 
 use App\Models\SamcModel;
+use App\Models\AssessorModel;
+use App\Models\ProviderModel;
 use App\Models\QvcAdminModel;
 use App\Models\NotificationModel;
 use App\Controllers\BaseController;
@@ -14,6 +16,8 @@ class QvcAdminController extends BaseController
     protected $qvc_admin_model;
     protected $assessor_expertise_model;
     protected $samc_model;
+    protected $provider_model;
+    protected $assessor_model;
 
     public function __construct()
     {
@@ -22,6 +26,8 @@ class QvcAdminController extends BaseController
         $this->session                          = service('session');
         $this->assessor_expertise_model         = new AssessorExpertiseFieldModel();
         $this->samc_model                       = new SamcModel();
+        $this->provider_model                   = new ProviderModel();
+        $this->assessor_model                   = new AssessorModel();
     }
 
     public function dashboard()
@@ -34,6 +40,44 @@ class QvcAdminController extends BaseController
             ->orderBy('n_created_at', 'DESC')  // Then order by creation date (latest first)
             ->findAll();
 
+        // SAMC Chart Data
+        $chart_draft = $this->samc_model
+            ->where('samc_status', 'DRAFT')
+            ->countAllResults();
+
+        $chart_pending_payment = $this->samc_model
+            ->where('samc_status', 'PENDING_PAYMENT')
+            ->countAllResults();
+
+        $chart_in_progress = $this->samc_model
+            ->whereIn('samc_status', ['AWAITING_REVIEWER_REVIEW', 'AWAITING_REVIEWER_RESPONSE', 'PENDING_CHECK', 'AWAITING_REVIEWER_ASSIGNMENT'])
+            ->countAllResults();
+
+        $chart_return = $this->samc_model
+            ->whereIn('samc_status', ['RETURN', 'Returned'])
+            ->countAllResults();
+
+        $chart_accept_with_amendment = $this->samc_model
+            ->where('samc_status', 'ACCEPT_WITH_AMENDMENT')
+            ->countAllResults();
+        $chart_accept = $this->samc_model
+            ->where('samc_status', 'ACCEPT')
+            ->countAllResults();
+
+        // Fetch Total Provider
+        $total_provider = $this->provider_model->countAllResults();
+
+        // Fetch Total Assessor
+        $total_assessor = $this->assessor_model->countAllResults();
+
+        // Fetch Total SAMC
+        $total_samc = $this->samc_model
+            ->whereIn('samc_status', ['AWAITING_REVIEWER_REVIEW', 'AWAITING_REVIEWER_RESPONSE', 'PENDING_CHECK', 'AWAITING_REVIEWER_ASSIGNMENT', 'RETURN', 'Returned', 'ACCEPT_WITH_AMENDMENT', 'ACCEPT'])
+            ->countAllResults();
+
+        // Fetch Total Income
+        $total_income = $total_samc * 1000;
+
         // Count Unread Notifications
         $unread_notifications = $this->notification_model
             ->where('n_is_read', 'f')
@@ -44,9 +88,20 @@ class QvcAdminController extends BaseController
         $admin_info = $this->qvc_admin_model->where('qa_id', $qa_id)->first();
 
         $data = [
-            'notifications'             => $notification,
-            'unread_notifications'      => $unread_notifications,
-            'admin_info'                => $admin_info
+            'notifications'                 => $notification,
+            'unread_notifications'          => $unread_notifications,
+            'admin_info'                    => $admin_info,
+            'chart_draft'                   => $chart_draft,
+            'chart_in_progress'             => $chart_in_progress,
+            'chart_return'                  => $chart_return,
+            'chart_accept_with_amendment'   => $chart_accept_with_amendment,
+            'chart_accept'                  => $chart_accept,
+            'chart_pending_payment'         => $chart_pending_payment,
+            'total_provider'                => $total_provider,
+            'total_assessor'                => $total_assessor,
+            'total_samc'                    => $total_samc,
+            'total_income'                  => $total_income,
+
         ];
 
         $this->render_admin('dashboard', $data);

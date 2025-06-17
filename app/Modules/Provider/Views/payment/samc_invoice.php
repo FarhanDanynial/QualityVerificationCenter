@@ -564,10 +564,10 @@
             </div>
             <!-- Add this to the button-group div in the invoice-footer section -->
             <div class="button-group">
-                <a href="<?= base_url('provider/invoice/download_invoice/') ?>" class="btn-download">
+                <a href="<?= base_url('provider/invoice/download_invoice/' . $invoice_details->sp_id) ?>" class="btn-download">
                     <i class="fas fa-download button-icon"></i> Download
                 </a>
-                <a href="<?= base_url('provider/invoice/print_invoice/') ?>" class="btn-print" target="_blank">
+                <a href="<?= base_url('provider/invoice/print_invoice/' . $invoice_details->sp_id) ?>" class="btn-print" target="_blank">
                     <i class="fas fa-print button-icon"></i> Print
                 </a>
                 <?php if ($invoice_details->sp_status == 'unpaid') : ?>
@@ -595,61 +595,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <!-- Payment Information Section -->
-                <!-- <div class="payment-info-section mb-4">
-                    <h6 class="text-uppercase text-primary font-weight-bold mb-3">Payment Details</h6>
-                    <div class="payment-details p-3 border border-light shadow-sm rounded-lg bg-gray-100"> -->
-                <!-- Invoice Info with icon -->
-                <!-- <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                            <div class="icon-shape icon-sm rounded-circle bg-gradient-primary text-white me-3 text-center">
-                                <i class="fas fa-file-invoice"></i>
-                            </div>
-                            <div>
-                                <h6 class="text-dark mb-0 text-sm">Invoice Summary</h6>
-                                <div class="d-flex mt-2">
-                                    <div class="me-4">
-                                        <p class="text-xs mb-0 text-secondary">Amount</p>
-                                        <h6 class="font-weight-bold mb-0">RM <?= $invoice_details->sp_amount ?></h6>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs mb-0 text-secondary">Due Date</p>
-                                        <h6 class="font-weight-bold mb-0"><?= (new DateTime($invoice_details->sp_created_at))->modify('+30 days')->format('d/m/Y') ?></h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
-                <!-- Bank Info with icon -->
-                <!-- <div class="d-flex align-items-center">
-                            <div class="icon-shape icon-sm rounded-circle bg-gradient-success text-white me-3 text-center">
-                                <i class="fas fa-university"></i>
-                            </div>
-                            <div style="width: 100% !important;">
-                                <h6 class="text-dark mb-2 text-sm">Bank Details</h6>
-                                <div class="bg-white px-3 py-2 rounded border w-100">
-                                    <table class="table table-sm table-borderless mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-secondary text-xs ps-0" width="80px">Bank Name</td>
-                                                <td class="text-dark text-xs pe-0">BANK ISLAM MALAYSIA BERHAD (BIMB)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-secondary text-xs ps-0">Account No.</td>
-                                                <td class="text-dark font-weight-bold text-xs pe-0">08068010003264</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-secondary text-xs ps-0">Recipient</td>
-                                                <td class="text-dark text-xs pe-0">BENDAHARI UNIVERSITI PENDIDIKAN SULTAN IDRIS</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-
-                <form action="<?= base_url('provider/invoice/submit_invoice_payment_proof/') ?>" method="post" enctype="multipart/form-data">
+                <form id="paymentProofUploadForm" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <input type="hidden" name="invoice_id" value="<?= $invoice_details->sp_id ?>">
                     <div class="row g-3">
@@ -878,7 +824,200 @@
     </div>
 </div>
 
-<!-- SweetAlert2 Flash Messages Handler -->
+<!-- JavaScript for handling file operations -->
+<script>
+    // File input change handler
+    document.getElementById('paymentProofFile')?.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const preview = document.getElementById('filePreview');
+        const fileName = document.getElementById('selectedFileName');
+
+        if (file) {
+            fileName.textContent = file.name;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    });
+
+    // Upload form submission
+    document.getElementById('paymentProofUploadForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+
+        // Disable submit button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+
+        // Send AJAX request
+        fetch('<?= base_url('provider/invoice/submit_invoice_payment_proof') ?>', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showAlert('success', 'Payment proof uploaded successfully!');
+
+                    // Reload the modal content or refresh the page
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', data.message || 'Failed to upload payment proof');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('error', 'An error occurred while uploading the file');
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+    });
+
+    // Upload Payment Proof Form Submission
+    // Upload form submission
+    document.getElementById('paymentProofUpdateForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+
+        // Disable submit button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+
+        // Send AJAX request
+        fetch('<?= base_url('provider/invoice/submit_invoice_payment_proof_update') ?>', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showAlert('success', 'Payment proof uploaded successfully!');
+
+                    // Reload the modal content or refresh the page
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', data.message || 'Failed to upload payment proof');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('error', 'An error occurred while uploading the file');
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+    });
+
+
+    function deletePaymentProof(invoiceId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This action will delete the payment proof and cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const csrfTokenName = "<?= csrf_token() ?>";
+                const csrfHash = "<?= csrf_hash() ?>";
+
+                const requestData = {
+                    invoice_id: invoiceId
+                };
+                requestData[csrfTokenName] = csrfHash;
+
+                fetch('<?= base_url('provider/invoice/delete_payment_proof') ?>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(requestData)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire(
+                                'Deleted!',
+                                'Payment proof has been deleted successfully.',
+                                'success'
+                            );
+
+                            document.getElementById('documentPreviewSection').innerHTML = `
+                            <div class="text-center">
+                                <div class="document-icon mb-3">
+                                    <i class="fas fa-file-upload text-muted fa-5x"></i>
+                                </div>
+                                <h6 class="text-muted">No payment proof has been uploaded yet</h6>
+                            </div>
+                        `;
+                        } else {
+                            Swal.fire(
+                                'Error!',
+                                data.message || 'Failed to delete payment proof.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while deleting the file.',
+                            'error'
+                        );
+                    });
+            }
+        });
+    }
+
+    // Cancel upload function
+    function cancelUpload() {
+        document.getElementById('paymentProofFile').value = '';
+        document.getElementById('filePreview').style.display = 'none';
+    }
+
+    function showAlert(type, message) {
+        const icon = type === 'success' ? 'success' : 'error';
+        const title = type === 'success' ? 'Success' : 'Error';
+
+        Swal.fire({
+            icon: icon,
+            title: title,
+            text: message,
+            timer: 2000,
+            showConfirmButton: false
+        });
+    }
+</script>
+
+<!-- Delete Invoice -->
 <script>
     // Enhanced Delete Confirmation with SweetAlert2
     function confirmDelete(invoiceId, invoiceNumber, invoiceAmount, deleteUrl) {

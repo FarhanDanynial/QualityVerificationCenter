@@ -16,19 +16,19 @@ class ProviderProfileController extends BaseController
         $this->provider_model                 = new ProviderModel();
     }
 
-    // public function profile()
-    // {
-    //     $pvd_id = session()->get('user_id');
+    public function profile()
+    {
+        $pvd_id = session()->get('user_id');
 
-    //     // Fecth user data
-    //     $provider_info = $this->provider_model->where('pvd_id', $pvd_id)->first();
+        // Fecth user data
+        $provider_info = $this->provider_model->where('pvd_id', $pvd_id)->first();
 
-    //     // Get provider details from the session
-    //     $data = [
-    //         'provider_info' => $provider_info,
-    //     ];
-    //     $this->render_provider('profile/view_profile', $data);
-    // }
+        // Get provider details from the session
+        $data = [
+            'provider_info' => $provider_info,
+        ];
+        $this->render_provider('profile/view_profile', $data);
+    }
 
     public function updateProfile()
     {

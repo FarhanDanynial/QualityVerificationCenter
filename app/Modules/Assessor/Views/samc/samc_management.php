@@ -28,7 +28,7 @@
 
     .nav-link.active {
         background-color: #5e72e4;
-        color: white !important;
+        /* color: white !important; */
         box-shadow: 0 3px 5px rgba(94, 114, 228, 0.3);
     }
 
@@ -234,7 +234,7 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="numbers">
-                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Assignments</p>
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">SAMC Assigned</p>
                                                     <h5 class="font-weight-bolder mb-0">
                                                         <?= count($samc_info ?? []) ?>
                                                     </h5>
@@ -242,7 +242,7 @@
                                             </div>
                                             <div class="col-4 text-end">
                                                 <div class="icon icon-shape bg-gradient-primary shadow text-center rounded-circle">
-                                                    <i class="fas fa-clipboard text-white opacity-10"></i>
+                                                    <i class="fas fa-clipboard opacity-10"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -255,12 +255,12 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="numbers">
-                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">In Progress</p>
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">ACCEPTED</p>
                                                     <h5 class="font-weight-bolder mb-0">
                                                         <?php
                                                         $inProgress = 0;
                                                         foreach ($samc_info ?? [] as $samc) {
-                                                            if ($samc->samc_status == 'Review In Progress') $inProgress++;
+                                                            if ($samc->samc_status == 'ACCEPT') $inProgress++;
                                                         }
                                                         echo $inProgress;
                                                         ?>
@@ -268,8 +268,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-4 text-end">
-                                                <div class="icon icon-shape bg-gradient-info shadow text-center rounded-circle">
-                                                    <i class="fas fa-sync-alt text-white opacity-10"></i>
+                                                <div class="icon icon-shape bg-gradient-success shadow text-center rounded-circle">
+                                                    <i class="fas fa-check opacity-10"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -282,12 +282,13 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="numbers">
-                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Completed</p>
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">ACCEPTED WITH AMENDMENTS</p>
                                                     <h5 class="font-weight-bolder mb-0">
                                                         <?php
                                                         $completed = 0;
                                                         foreach ($samc_info ?? [] as $samc) {
-                                                            if ($samc->samc_status == 'Reviewed' || $samc->samc_status == 'Pass' || $samc->samc_status == 'Conditional Pass') $completed++;
+                                                            if ($samc->samc_status == 'ACCEPT_WITH_AMENDMENT')
+                                                                $completed++;
                                                         }
                                                         echo $completed;
                                                         ?>
@@ -295,8 +296,8 @@
                                                 </div>
                                             </div>
                                             <div class="col-4 text-end">
-                                                <div class="icon icon-shape bg-gradient-success shadow text-center rounded-circle">
-                                                    <i class="fas fa-check text-white opacity-10"></i>
+                                                <div class="icon icon-shape bg-gradient-warning shadow text-center rounded-circle">
+                                                    <i class="fas fa-hourglass-half opacity-10"></i>
                                                 </div>
                                             </div>
                                         </div>
@@ -309,12 +310,12 @@
                                         <div class="row">
                                             <div class="col-8">
                                                 <div class="numbers">
-                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending</p>
+                                                    <p class="text-sm mb-0 text-uppercase font-weight-bold">RETURNED</p>
                                                     <h5 class="font-weight-bolder mb-0">
                                                         <?php
                                                         $pending = 0;
                                                         foreach ($samc_info ?? [] as $samc) {
-                                                            if ($samc->samc_status == 'Assign For Review') $pending++;
+                                                            if ($samc->samc_status == 'RETURN') $pending++;
                                                         }
                                                         echo $pending;
                                                         ?>
@@ -322,49 +323,9 @@
                                                 </div>
                                             </div>
                                             <div class="col-4 text-end">
-                                                <div class="icon icon-shape bg-gradient-warning shadow text-center rounded-circle">
-                                                    <i class="fas fa-hourglass-half text-white opacity-10"></i>
+                                                <div class="icon icon-shape bg-gradient-danger shadow text-center rounded-circle">
+                                                    <i class="fas fa-times opacity-10"></i>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Filter & Controls -->
-                        <div class="card mb-4">
-                            <div class="card-body p-3">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-8 col-md-7">
-                                        <div class="d-flex flex-wrap gap-2">
-                                            <button class="filter-btn btn bg-gradient-secondary" data-filter="Assign For Review" style="font-size: 12px;">
-                                                <i class="fas fa-list-alt me-1"></i> Assigned
-                                            </button>
-                                            <button class="filter-btn btn bg-gradient-info" data-filter="Review In Progress" style="font-size: 12px;">
-                                                <i class="fas fa-spinner me-1"></i> In Progress
-                                            </button>
-                                            <button class="filter-btn btn bg-gradient-primary" data-filter="Reviewed" style="font-size: 12px;">
-                                                <i class="fas fa-check-circle me-1"></i> Reviewed
-                                            </button>
-                                            <button class="filter-btn btn bg-gradient-success" data-filter="Pass" style="font-size: 12px;">
-                                                <i class="fas fa-award me-1"></i> Pass
-                                            </button>
-                                            <button class="filter-btn btn bg-gradient-warning" data-filter="Conditional Pass" style="font-size: 12px;">
-                                                <i class="fas fa-clipboard-check me-1"></i> Conditional
-                                            </button>
-                                            <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
-                                                <i class="fas fa-th-list me-1"></i> All
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
-                                        <div class="d-flex align-items-center justify-content-md-end">
-                                            <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                                Export
-                                            </button>
-                                            <div id="datatable-search_filter">
-                                                <!-- Search input will be placed here -->
                                             </div>
                                         </div>
                                     </div>
@@ -375,6 +336,47 @@
                         <!-- SAMC Table -->
                         <div class="card">
                             <div class="card-body p-3">
+                                <!-- Filter & Controls -->
+                                <div class="card-body p-3">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-8 col-md-7">
+                                            <div class="d-flex flex-wrap gap-2">
+                                                <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
+                                                    <i class="fas fa-th-list me-1"></i> All
+                                                </button>
+                                                <!-- <button class="filter-btn btn bg-gradient-success" data-filter="ACCEPT" style="font-size: 12px;">
+                                                <i class="fas fa-award me-1"></i> ACCEPTED
+                                            </button>
+                                            <button class="filter-btn btn bg-gradient-warning" data-filter="ACCEPT WITH AMENDMENT" style="font-size: 12px;">
+                                                <i class="fas fa-clipboard-check me-1"></i> ACCEPTED WITH AMENDMENT
+                                            </button>
+                                            <button class="filter-btn btn bg-gradient-secondary" data-filter="Assign For Review" style="font-size: 12px;">
+                                                <i class="fas fa-list-alt me-1"></i> Assigned
+                                            </button> -->
+                                                <button class="filter-btn btn bg-gradient-info" data-filter="Awaiting Review" style="font-size: 12px;">
+                                                    <i class="fas fa-spinner me-1"></i> In Progress
+                                                </button>
+                                                <button class="filter-btn btn bg-gradient-success" data-filter="Reviewed" style="font-size: 12px;">
+                                                    <i class="fas fa-check-circle me-1"></i> Reviewed
+                                                </button>
+
+
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
+                                            <div class="d-flex align-items-center justify-content-md-end">
+                                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
+                                                    Export
+                                                </button>
+                                                <div id="datatable-search_filter">
+                                                    <!-- Search input will be placed here -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <div class="table-responsive">
                                     <table class="table" id="datatable-search">
                                         <thead>
@@ -432,13 +434,16 @@
                                                         </td>
                                                         <td class="text-center">
                                                             <div class="action-container justify-content-center">
-                                                                <button class="btn btn-sm bg-gradient-info action-icon" data-bs-toggle="tooltip" title="Details">
-                                                                    <i class="fas fa-info-circle" style="font-size: 12px;"></i>
-                                                                </button>
-
-                                                                <?php if ($samc->samc_status != 'Assessment Completed'): ?>
+                                                                <?php if (in_array($samc->samc_status, ['AWAITING_REVIEWER_REVIEW'])): ?>
                                                                     <a href="<?= base_url('assessor/samc/set_samc_id/' . $samc->samc_id) ?>" class="btn btn-sm bg-gradient-success action-icon" data-bs-toggle="tooltip" title="Review">
                                                                         <i class="fas fa-clipboard" style="font-size: 12px;"></i>
+                                                                    </a>
+                                                                <?php endif; ?>
+
+                                                                <?php if (in_array($samc->samc_status, ['ACCEPT', 'ACCEPT_WITH_AMENDMENT', 'RETURN'])): ?>
+                                                                    <a href="<?= base_url('assessor/samc/review_result/') . $samc->samc_id ?>"
+                                                                        class="btn btn-sm bg-gradient-success action-icon" data-bs-toggle="tooltip" title="Review Result">
+                                                                        <i class="fas fa-eye" style="font-size: 16px;"></i>
                                                                     </a>
                                                                 <?php endif; ?>
                                                             </div>

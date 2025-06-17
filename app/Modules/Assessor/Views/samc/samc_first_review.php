@@ -928,38 +928,6 @@
                     <div class="assessment-section">
                         <div class="assessment-section-title">3. Review Result</div>
 
-                        <div class="assessment-item" data-item-id="9">
-                            <div class="assessment-item-header">
-                                <div class="assessment-item-title">
-                                    <span>Overall Result</span>
-                                    <i class="fas fa-info-circle tooltip-icon" title="Evaluate if the assessment is well-defined and aligns with course objectives"></i>
-                                </div>
-                                <div class="assessment-options">
-                                    <div class="option-group">
-                                        <label class="custom-radio">
-                                            <input type="radio" name="status[9]" value="accepted" <?= (isset($reviews_1->sr_review_status) && $reviews_1->sr_review_status == 'accepted') ? 'checked' : ''; ?> required>
-                                            <span>Accepted</span>
-                                        </label>
-                                    </div>
-                                    <div class="option-group">
-                                        <label class="custom-radio">
-                                            <input type="radio" name="status[9]" value="not_accepted" <?= (isset($reviews_1->sr_review_status) && $reviews_1->sr_review_status == 'not_accepted') ? 'checked' : ''; ?> required>
-                                            <span>Not Accepted</span>
-                                        </label>
-                                    </div>
-                                    <div class="option-group">
-                                        <label class="custom-checkbox">
-                                            <input type="checkbox" class="dont-know" data-index="9" <?= (isset($reviews_1->sr_review_status) && $reviews_1->sr_review_status == 'decide_later') ? 'checked' : ''; ?>>
-                                            <span>Decide Later</span>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="assessment-remarks">
-                                <textarea name="remarks[8]" placeholder="Add your remarks or suggestions here..." class="form-control"><?= isset($reviews_1->sr_assessment) ? $reviews_1->sr_assessment : '' ?></textarea>
-                            </div>
-                        </div>
-
                         <div class="assessment-item">
                             <div class="assessment-item-header">
                                 <div class="assessment-item-title">
@@ -987,6 +955,40 @@
                                 </select>
                             </div>
                         </div>
+
+                        <div class="assessment-item" data-item-id="9">
+                            <div class="assessment-item-header">
+                                <div class="assessment-item-title">
+                                    <span>Comment</span>
+                                    <i class="fas fa-info-circle tooltip-icon" title="Evaluate if the assessment is well-defined and aligns with course objectives"></i>
+                                </div>
+                                <!-- <div class="assessment-options">
+                                    <div class="option-group">
+                                        <label class="custom-radio">
+                                            <input type="radio" name="status[9]" value="accepted" <?= (isset($reviews_1->sr_review_status) && $reviews_1->sr_review_status == 'accepted') ? 'checked' : ''; ?> required>
+                                            <span>Accepted</span>
+                                        </label>
+                                    </div>
+                                    <div class="option-group">
+                                        <label class="custom-radio">
+                                            <input type="radio" name="status[9]" value="not_accepted" <?= (isset($reviews_1->sr_review_status) && $reviews_1->sr_review_status == 'not_accepted') ? 'checked' : ''; ?> required>
+                                            <span>Not Accepted</span>
+                                        </label>
+                                    </div>
+                                    <div class="option-group">
+                                        <label class="custom-checkbox">
+                                            <input type="checkbox" class="dont-know" data-index="9" <?= (isset($reviews_1->sr_review_status) && $reviews_1->sr_review_status == 'decide_later') ? 'checked' : ''; ?>>
+                                            <span>Decide Later</span>
+                                        </label>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div class="assessment-remarks">
+                                <textarea name="sr_review" placeholder="Add your remarks or suggestions here..." class="form-control"><?= isset($reviews_1->sr_review) ? $reviews_1->sr_review : '' ?></textarea>
+                            </div>
+                        </div>
+
+
                     </div>
 
                     <div class="form-actions">

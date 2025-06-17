@@ -1,11 +1,100 @@
-<style>
-    .icon-shape .ni {
-        /* top: 5px !important; */
-    }
-</style>
+<!-- FontAwesome -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 <div class="container-fluid py-4">
     <div class="row">
-        <div class="col-xl-7">
+        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-dark text-sm mb-0 text-capitalize font-weight-bold opacity-7">Profit</p>
+                                <h5 class="text-dark font-weight-bolder mb-0">
+                                    RM <?= $profit ?>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-success shadow text-center border-radius-md">
+                                <i class="ni ni-money-coins text-white text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-dark text-sm mb-0 text-capitalize font-weight-bold opacity-7">New Assignation</p>
+                                <h5 class="text-dark font-weight-bolder mb-0">
+                                    <?= $new_samc_assign ?> SAMC
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-danger shadow text-center border-radius-md">
+                                <i class="ni ni-folder-17 text-white text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-dark text-sm mb-0 text-capitalize font-weight-bold opacity-7">In Review Progress</p>
+                                <h5 class="text-dark font-weight-bolder mb-0">
+                                    <?= $review_in_progress ?> SAMC
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-warning shadow text-center border-radius-md">
+                                <i class="ni ni-settings text-white text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-dark text-sm mb-0 text-capitalize font-weight-bold opacity-7">Completed</p>
+                                <h5 class="text-dark font-weight-bolder mb-0">
+                                    <?= $completed_review ?> SAMC
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-info shadow text-center border-radius-md">
+                                <i class="ni ni-check-bold text-white text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="row">
+        <!-- Memo -->
+        <div class="col-xl-7 mt-4">
             <div class="card">
                 <div class="card-header d-flex align-items-center bg-gradient-primary justify-content-between pb-0 p-3">
                     <h5 class="mb-3">Memo</h5>
@@ -16,7 +105,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="card-body border-radius-lg p-3 my-2" style="height:420px; overflow:auto;">
+                <div class="card-body border-radius-lg p-3 my-2" style="height:450px; overflow:auto;">
                     <?= csrf_field() ?>
                     <?php if ($unread_notifications == '0'): ?>
                         <div class="empty-notification p-4">
@@ -73,7 +162,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-5 ms-auto mt-xl-0 mt-4">
+        <!-- Chart -->
+        <div class="col-xl-5 ms-auto mt-4">
             <div class="row">
                 <div class="col-12">
                     <div class="card bg-gradient-primary">
@@ -87,169 +177,40 @@
                                         </h5>
                                     </div>
                                 </div>
-                                <div class="col-4 text-end">
-                                    <img class="w-50" src="<?= base_url(); ?>/assets/img/logos/emoji.png" alt="image sun">
-                                    <!-- <h5 class="mb-0 text-white text-end me-1">Cloudy</h5> -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-lg-12 mt-lg-0 mt-4">
+                    <div class="card z-index-2 position-relative">
+                        <div class="card-header p-3 pb-0">
+                            <h6>Assessor Expertise Barchart</h6>
+                        </div>
+                        <div class="card-body p-3 position-relative">
+                            <div class="chart position-relative">
+                                <canvas id="bar-chart-horizontal" class="chart-canvas" height="345"></canvas>
+                                <!-- Backdrop for Empty Data -->
+                                <div id="empty-data-backdrop"
+                                    class="position-absolute top-0 start-0 w-100 h-100 align-items-center justify-content-center text-center"
+                                    style="background: rgba(0, 0, 0, 0.5); color: white; font-size: 18px; display: none;">
+                                    No data available
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h1 class="text-gradient text-primary"><span id="status1" countto="21">21</span> <span class="text-lg ms-n2">°C</span></h1>
-                            <h6 class="mb-0 font-weight-bolder">Total Active</h6>
-                            <p class="opacity-8 mb-0 text-sm">SAMC</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mt-md-0 mt-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h1 class="text-gradient text-primary"> <span id="status2" countto="44">44</span> <span class="text-lg ms-n1">%</span></h1>
-                            <h6 class="mb-0 font-weight-bolder">Total In Process</h6>
-                            <p class="opacity-8 mb-0 text-sm">SAMC</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-4">
-                <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h1 class="text-gradient text-primary"><span id="status3" countto="87">87</span> <span class="text-lg ms-n2">m³</span></h1>
-                            <h6 class="mb-0 font-weight-bolder">Total Income</h6>
-                            <p class="opacity-8 mb-0 text-sm">SAMC</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 mt-md-0 mt-4">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <h1 class="text-gradient text-primary"><span id="status4" countto="417">417</span> <span class="text-lg ms-n2">GB</span></h1>
-                            <h6 class="mb-0 font-weight-bolder">Total Unassigned</h6>
-                            <p class="opacity-8 mb-0 text-sm">SAMC</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row mt-4">
-        <div class="col-lg-3 col-md-6 col-12">
-            <div class="card bg-gradient-info">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-white text-sm mb-0 text-capitalize font-weight-bold opacity-7">New Assignation</p>
-                                <h5 class="text-white font-weight-bolder mb-0">
-                                    <?= $new_samc_assign ?> SAMC
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-white shadow text-center border-radius-md">
-                                <i class="ni ni-folder-17 text-info text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-md-0">
-            <div class="card bg-gradient-warning">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-white text-sm mb-0 text-capitalize font-weight-bold opacity-7">In Review Progress</p>
-                                <h5 class="text-white font-weight-bolder mb-0">
-                                    <?= $review_in_progress ?> SAMC
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-white shadow text-center border-radius-md">
-                                <i class="ni ni-settings text-warning text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0">
-            <div class="card bg-gradient-success">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-white text-sm mb-0 text-capitalize font-weight-bold opacity-7">Completed</p>
-                                <h5 class="text-white font-weight-bolder mb-0">
-                                    <?= $completed_review ?> SAMC
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-white shadow text-center border-radius-md">
-                                <i class="ni ni-check-bold text-success text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3 col-md-6 col-12 mt-4 mt-lg-0">
-            <div class="card bg-gradient-danger">
-                <div class="card-body p-3">
-                    <div class="row">
-                        <div class="col-8">
-                            <div class="numbers">
-                                <p class="text-white text-sm mb-0 text-capitalize font-weight-bold opacity-7">Profit</p>
-                                <h5 class="text-white font-weight-bolder mb-0">
-                                    RM <?= $profit ?>
-                                </h5>
-                            </div>
-                        </div>
-                        <div class="col-4 text-end">
-                            <div class="icon icon-shape bg-white shadow text-center border-radius-md">
-                                <i class="ni ni-money-coins text-danger text-lg opacity-10" aria-hidden="true"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
-    <div class="row mt-4">
-        <div class="col-lg-12 mt-lg-0 mt-4">
-            <div class="card z-index-2 position-relative">
-                <div class="card-header p-3 pb-0">
-                    <h6>Assessor Expertise Barchart</h6>
-                </div>
-                <div class="card-body p-3 position-relative">
-                    <div class="chart position-relative">
-                        <canvas id="bar-chart-horizontal" class="chart-canvas" height="300"></canvas>
-                        <!-- Backdrop for Empty Data -->
-                        <div id="empty-data-backdrop"
-                            class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-center"
-                            style="background: rgba(0, 0, 0, 0.5); color: white; font-size: 18px; display: none;">
-                            No data available
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+
+
 
 </div>
+
 <script src="<?= base_url('') ?>assets/js/plugins/chartjs.min.js"></script>
 
 <script>
@@ -362,7 +323,6 @@
             });
         });
 
-        // Expertise Chart
         // Fetch Chart Data
         fetch("<?= base_url('assessor/getSamcExpertiseData') ?>")
             .then(response => response.json())
@@ -370,73 +330,73 @@
                 var ctx6 = document.getElementById("bar-chart-horizontal").getContext("2d");
                 var backdrop = document.getElementById("empty-data-backdrop");
 
-                if (!data.data || data.data.length === 0) {
+                if (!data.data || data.data.length === 0 || data.data.every(val => val === 0)) {
                     // Show Backdrop if Data is Empty
                     backdrop.style.display = "flex";
                 } else {
                     // Hide Backdrop if Data is Available
                     backdrop.style.display = "none";
+                }
 
-                    // Render Chart
-                    new Chart(ctx6, {
-                        type: "bar",
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                label: "Samc by Expertise",
-                                weight: 5,
-                                borderWidth: 0,
-                                borderRadius: 4,
-                                backgroundColor: [
-                                    '#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#FFD700', '#A833FF'
-                                ],
-                                data: data.data,
-                                fill: false
-                            }],
+                // Render Chart
+                new Chart(ctx6, {
+                    type: "bar",
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: "Total SAMC",
+                            weight: 5,
+                            borderWidth: 0,
+                            borderRadius: 4,
+                            backgroundColor: [
+                                '#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#FFD700', '#A833FF'
+                            ],
+                            data: data.data,
+                            fill: false
+                        }],
+                    },
+                    options: {
+                        // indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            }
                         },
-                        options: {
-                            indexAxis: 'y',
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false,
+                        scales: {
+                            y: {
+                                grid: {
+                                    drawBorder: false,
+                                    display: true,
+                                    drawOnChartArea: true,
+                                    drawTicks: false,
+                                    borderDash: [5, 5]
+                                },
+                                ticks: {
+                                    display: true,
+                                    padding: 10,
+                                    color: '#9ca2b7'
                                 }
                             },
-                            scales: {
-                                y: {
-                                    grid: {
-                                        drawBorder: false,
-                                        display: true,
-                                        drawOnChartArea: true,
-                                        drawTicks: false,
-                                        borderDash: [5, 5]
-                                    },
-                                    ticks: {
-                                        display: true,
-                                        padding: 10,
-                                        color: '#9ca2b7'
-                                    }
+                            x: {
+                                grid: {
+                                    drawBorder: false,
+                                    display: false,
+                                    drawOnChartArea: true,
+                                    drawTicks: true,
                                 },
-                                x: {
-                                    grid: {
-                                        drawBorder: false,
-                                        display: false,
-                                        drawOnChartArea: true,
-                                        drawTicks: true,
-                                    },
-                                    ticks: {
-                                        display: true,
-                                        color: '#9ca2b7',
-                                        padding: 10,
-                                        stepSize: 1,
-                                        beginAtZero: true
-                                    }
-                                },
+                                ticks: {
+                                    display: true,
+                                    color: '#9ca2b7',
+                                    padding: 10,
+                                    stepSize: 1,
+                                    beginAtZero: true
+                                }
                             },
                         },
-                    });
-                }
+                    },
+                });
             })
             .catch(error => {
                 console.error("Error fetching chart data:", error);

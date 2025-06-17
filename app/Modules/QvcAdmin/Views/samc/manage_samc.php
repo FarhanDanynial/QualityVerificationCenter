@@ -36,31 +36,155 @@
         font-weight: 500;
         font-size: 0.75rem;
     }
+
+
+    .action-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .action-icon:hover {
+        transform: translateY(-2px);
+    }
 </style>
 
-<div class="container-fluid py-4">
+<div class="container-fluid py-4 pt-0">
     <div class="row">
         <div class="card">
             <!-- Card header -->
             <div class="card-header pb-0 p-3">
                 <h2 class="mb-0 fs-4 fw-bold">SAMC Management Dashboard</h2>
-                <p>Comprehensive view of all submitted Self-Assessment and Monitoring Checks</p>
+                <!-- <p>Comprehensive view of all submitted Self-Assessment and Monitoring Checks</p> -->
             </div>
             <div class="card-body p-3 mt-2">
-
-                <!-- Filter & Controls -->
+                <div class="row mb-0">
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total SAMC</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?= count($samc_info ?? []) ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-primary shadow text-center rounded-circle">
+                                            <i class="fas fa-clipboard text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Completed</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $completed_samc = 0;
+                                                foreach ($samc_info ?? [] as $samc) {
+                                                    if ($samc->samc_status == 'ACCEPT')
+                                                        $completed_samc++;
+                                                }
+                                                echo $completed_samc;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-success shadow text-center rounded-circle">
+                                            <i class="fas fa-check text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">In Progress</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $in_progress = 0;
+                                                foreach ($samc_info ?? [] as $samc) {
+                                                    if ($samc->samc_status == 'AWAITING_REVIEWER_ASSIGNMENT' || $samc->samc_status == 'AWAITING_REVIEWER_RESPONSE' || $samc->samc_status == 'AWAITING_REVIEWER_REVIEW' || $samc->samc_status == 'PENDING_CHECK' || $samc->samc_status == 'ACCEPT_WITH_AMENDMENT')
+                                                        $in_progress++;
+                                                }
+                                                echo $in_progress;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-warning shadow text-center rounded-circle">
+                                            <i class="fas fa-sync-alt text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Need Attention</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $in_progress = 0;
+                                                foreach ($samc_info ?? [] as $samc) {
+                                                    if ($samc->samc_status == 'AWAITING_REVIEWER_ASSIGNMENT' || $samc->samc_status == 'PENDING_CHECK')
+                                                        $in_progress++;
+                                                }
+                                                echo $in_progress;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-danger shadow text-center rounded-circle">
+                                            <i class="fas fa-hourglass-half text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="card mb-4">
                     <div class="card-body p-3">
-                        <div class="row align-items-center">
+                        <!-- Filter & Controls -->
+                        <div class="row align-items-center p-3">
                             <div class="col-lg-8 col-md-7">
                                 <div class="d-flex flex-wrap gap-2">
-                                    <button class="filter-btn btn bg-gradient-warning" data-filter="Pending Payment" style="font-size: 12px;">
+                                    <button class="filter-btn btn bg-gradient-info" data-filter="Pending Payment" style="font-size: 12px;">
                                         <i class="fas fa-spinner me-1"></i> Pending Payment
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-warning" data-filter="Pending Payment Approval" style="font-size: 12px;">
+                                        <i class="fas fa-award me-1"></i> Pending Check
                                     </button>
                                     <button class="filter-btn btn bg-gradient-success" data-filter="Awaiting Reviewer Assignment" style="font-size: 12px;">
                                         <i class="fas fa-award me-1"></i> Awaiting Reviewer Assignment
-
                                     </button>
+
                                     <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
                                         <i class="fas fa-th-list me-1"></i> All
                                     </button>
@@ -90,21 +214,17 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="card mb-4">
-                    <div class="card-body p-3">
                         <div class="table-responsive">
                             <table class="table" id="datatable-search">
                                 <thead>
                                     <tr>
-                                        <th>No.</th>
+                                        <th class="text-center" style="width:60px;">No.</th>
                                         <th>Provider Name</th>
                                         <th>Course Title</th>
-                                        <th>Status</th>
-                                        <th>Timeline</th>
-                                        <th>Actions</th>
+                                        <th style="width:170px;">Status</th>
+                                        <th style="width:200px;">Timeline</th>
+                                        <th style="width:120px;" class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -149,12 +269,12 @@
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <div class="action-container justify-content-center">
+                                                <div class="action-container d-flex justify-content-around">
                                                     <a href="<?= base_url('qvcAdmin/getSamcData/' . $samc->samc_id) ?>"
                                                         class="btn btn-sm bg-gradient-info action-icon" style="background-color: #3b82f6; color: white;"
                                                         data-bs-toggle="tooltip"
                                                         title="View SAMC Details">
-                                                        <i class="fas fa-info-circle" style="font-size: 12px;"></i>
+                                                        <i class="fas fa-info-circle" style="font-size: 16px;"></i>
                                                     </a>
 
                                                     <?php if ($samc->samc_status == 'PAID' || $samc->samc_status == 'AWAITING_REVIEWER_ASSIGNMENT'): ?>
@@ -162,7 +282,7 @@
                                                             class="btn btn-sm bg-gradient-success action-icon" style="background-color: #6b7280; color: white;"
                                                             data-bs-toggle="tooltip"
                                                             title="Review & Assign APP">
-                                                            <i class="fas fa-clipboard" style="font-size: 12px;"></i>
+                                                            <i class="fas fa-clipboard" style="font-size: 16px;"></i>
                                                         </a>
                                                     <?php endif; ?>
 
@@ -171,7 +291,7 @@
                                                             class="btn btn-sm bg-gradient-primary action-icon" style="background-color: #0ea5e9; color: white;"
                                                             data-bs-toggle="tooltip"
                                                             title="Final Review">
-                                                            <i class="fas fa-check-double" style="font-size: 12px;"></i>
+                                                            <i class="fas fa-check-double" style="font-size: 16px;"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>

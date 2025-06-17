@@ -355,12 +355,12 @@
                     <tr>
                         <td class="text-center"><?= $counter++; ?></td>
                         <td>
-                            <div class="item-desc"><?= $item['samc_name'] ?></div>
-                            <div class="item-subdesc">SAMC ID: <?= $item['samc_id'] ?></div>
+                            <div class="item-desc"><?= $item->samc_course_name ?></div>
+                            <!-- <div class="item-subdesc">SAMC ID: <?= $item->spi_samc_id ?></div> -->
                         </td>
                         <td class="text-center">1</td>
-                        <td class="text-end" style="text-align: right;"><?= number_format($item['amount'], 2) ?></td>
-                        <td class="text-end fw-bold" style="text-align: right;"><?= number_format($item['amount'], 2) ?></td>
+                        <td class="text-end" style="text-align: right;"><?= number_format(1000, 2) ?></td>
+                        <td class=" text-end fw-bold" style="text-align: right;"><?= number_format(1000, 2) ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -373,7 +373,7 @@
                 <tr>
                     <td colspan="3"></td>
                     <td class="text-right" style="font-weight: bold;">Jumlah</td>
-                    <td class="text-right" style="font-weight: bold;">RM <?= $total_amount ?></td>
+                    <td class="text-right" style="font-weight: bold;">RM <?= $invoice_details->sp_amount ?></td>
                 </tr>
             </tfoot>
         </table>

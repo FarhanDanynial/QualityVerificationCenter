@@ -56,7 +56,9 @@ class AssessorSamcController extends BaseController
             ->where('samc_asr_id', $asr_id)
             ->groupStart()
             ->where('samc_status', 'AWAITING_REVIEWER_REVIEW')  // ✅ Use `where()` first
-            ->orWhere('samc_status', 'REVIEW_COMPLETED')
+            ->orWhere('samc_status', 'ACCEPT')
+            ->orWhere('samc_status', 'ACCEPT_WITH_AMENDMENT')
+            ->orWhere('samc_status', 'RETURN')
             ->groupEnd()
             ->findAll();
 
@@ -260,6 +262,7 @@ class AssessorSamcController extends BaseController
         $status         = $this->request->getPost('status') ?? []; // Ensure it is an array
         $remarks        = $this->request->getPost('remarks') ?? []; // Ensure it is an array
         $review_status  = strtoupper($this->request->getPost('result') ?? []);
+        $sr_review      = $this->request->getPost('sr_review');
         $data = [
             'sr_samc_id'                            => $samc_id,
 
@@ -285,6 +288,7 @@ class AssessorSamcController extends BaseController
             'sr_content_outline'                    =>  $remarks[7] ?? null,
             'sr_assessment'                         =>  $remarks[8] ?? null,
 
+            'sr_review'                             =>  $sr_review,
             'sr_review_status'                      =>  $review_status,
             'sr_created_at'                         =>  date('Y-m-d H:i:s'),
         ];
@@ -329,6 +333,7 @@ class AssessorSamcController extends BaseController
         $status     = $this->request->getPost('status') ?? []; // Ensure it is an array
         $remarks    = $this->request->getPost('remarks') ?? []; // Ensure it is an array
         $review_status  = strtoupper($this->request->getPost('result') ?? []);
+        $sr_review      = $this->request->getPost('sr_review');
 
         $data = [
             'sr_samc_id'                            => $samc_id,
@@ -356,7 +361,8 @@ class AssessorSamcController extends BaseController
             'sr_content_outline'                    =>  $remarks[7] ?? null,
             'sr_assessment'                         =>  $remarks[8] ?? null,
 
-            'sr_review_status'                      => $review_status,
+            'sr_review'                             =>  $sr_review,
+            'sr_review_status'                      =>  $review_status,
             'sr_created_at'                         =>  date('Y-m-d H:i:s'),
         ];
 
@@ -381,7 +387,7 @@ class AssessorSamcController extends BaseController
             $samc_data = [
                 'samc_reviewed_date'    => date('Y-m-d H:i:s'),
                 'samc_review_count'     => ($sr_counter == 1) ? '1' : '2',
-                'samc_status'           => 'REVIEW_COMPLETED',
+                'samc_status'           => $review_status,
             ];
 
             if ($this->samc_model->update($samc_id, $samc_data)) {
@@ -413,5 +419,80 @@ class AssessorSamcController extends BaseController
                 'message' => 'Failed to submit'
             ]);
         }
+    }
+
+    // Get SAMC information and store it in session
+    public function reviewResult($samcId)
+    {
+        $this->session->set('samc_Id', $samcId);
+
+        // Redirect to samcDetails page
+        return redirect()->to('/assessor/samc/samc_review_details');
+    }
+
+    // Display SAMC information page
+    public function samcReviewDetails()
+    {
+        $samcId = $this->session->get('samc_Id'); // Get stored ID from session
+
+        if (!$samcId) {
+            return redirect()->to('/assessor/samc/manage_samc')->with('error', 'No SAMC ID found in session');
+        }
+
+        $samc_data = $this->samc_model->find($samcId);
+
+        // Fetch samc field
+        $samc_field = $this->expertise_model->select('ef_desc')->where('ef_id', $samc_data->samc_ef_id)->first();
+
+        // Fetch Course Outline Info
+        $samc_cco_data = $this->course_content_outline_model->where('cco_samc_id', $samcId)->findAll();
+
+        // Fetch  continuous assessment data
+        $samc_continuous_assessment_data = $this->samc_assessment_model->where('sa_samc_id', $samcId)->where('sa_type', 'continuous')->findAll();
+
+        // Fetch  final assessment data
+        $samc_final_assessment_data = $this->samc_assessment_model->where('sa_samc_id', $samcId)->where('sa_type', 'final')->findAll();
+
+        /* Fetch review data
+            Indicator
+            First time review - Review 1
+            0 - Review Draft
+            1 - Review Submitted
+    
+            Second time review - Review 2
+            2 - Review Draft
+            3 - Review Submitted
+            */
+        $reviews_1 = $this->samc_review
+            ->where('sr_samc_id', $samcId)
+            ->whereIn('sr_counter', ['1'])
+            ->first();
+
+        $reviews_2 = [];
+
+        if ($reviews_1 && $reviews_1->sr_counter == 1) {
+            // Fetch review 2
+            $reviews_2 = $this->samc_review
+                ->where('sr_samc_id', $samcId)
+                ->whereIn('sr_counter', ['3'])
+                ->first();
+        }
+
+
+        // dd($reviews_2);
+        // Fetch Samc Part 2 details
+        $data = [
+            'samc_data'                         => $samc_data,
+            'reviews_1'                         => $reviews_1,
+            'reviews_2'                         => $reviews_2,
+            'samc_cco_data'                     => $samc_cco_data,
+            'samc_continuous_assessment_data'   => $samc_continuous_assessment_data,
+            'samc_final_assessment_data'        => $samc_final_assessment_data,
+            'samc_field'                        => $samc_field->ef_desc,
+        ];
+
+        // dd($data);
+        // Review one and two completed
+        $this->render_assessor('samc/view_review_result', $data);
     }
 }

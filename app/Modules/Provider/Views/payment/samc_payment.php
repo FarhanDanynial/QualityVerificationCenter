@@ -112,12 +112,6 @@
         /* Purple border */
     }
 
-    .action-bar-title {
-        font-weight: 600;
-        color: var(--primary-color);
-        margin-bottom: 0;
-    }
-
     /* Invoice selection info */
     .selection-info {
         background-color: rgba(62, 109, 176, 0.03);
@@ -191,16 +185,16 @@
     <!-- Action Bar -->
     <div class="action-bar">
         <div>
-            <h4 class="action-bar-title">Pending SAMC</h4>
-            <p class="mb-0 text-muted small">Manage your pending invoices and payment processes</p>
+            <h2 class="mb-0 fs-4 fw-bold">SAMC Payment</h2>
+            <p class="mb-0 text-muted small">Make payment for the SAMC you have registered in this System</p>
         </div>
         <div>
-            <button class="btn btn-outline-primary me-2">
+            <a href="<?= base_url('provider/payment/payment_history') ?>" class="btn btn-outline-primary me-2">
                 <i class="fas fa-history me-1"></i> Payment History
-            </button>
-            <button class="btn btn-primary">
+            </a>
+            <!-- <button class="btn btn-primary">
                 <i class="fas fa-file-export me-1"></i> Export
-            </button>
+            </button> -->
         </div>
     </div>
 
@@ -210,9 +204,9 @@
             <!-- Invoice listing -->
             <div class="card">
                 <div class="card-header">
-                    <h5>SAMC</h5>
+                    <h5>My SAMC</h5>
                 </div>
-                <div class="card-body p-3">
+                <div class="card-body p-0">
                     <div class="table-responsive" style="max-height: 607px; overflow-y: auto;">
                         <table class="table" id="datatable-search">
                             <thead>

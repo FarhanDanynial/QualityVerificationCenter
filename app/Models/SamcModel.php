@@ -30,7 +30,8 @@ class SamcModel extends Model
         'samc_reviewed_date',
         'samc_review_count',
         'samc_start_date',
-        'samc_expired_date'
+        'samc_expired_date',
+        'samc_admin_remarks',
     ];
 
     protected $useSoftDeletes = true;

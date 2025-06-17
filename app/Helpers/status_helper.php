@@ -10,7 +10,7 @@ if (!function_exists('get_samc_admin_status_badge')) {
             case 'PENDING_PAYMENT':
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Payment</span>';
             case 'PENDING_INVOICE_PAYMENT':
-                return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Invoice Payment</span>';
+                return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Invoice Payment</span>';
             case 'PENDING_CHECK':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="Provider has submit payment proof. Please validate.">Pending Payment Approval</span>';
             case 'PAYMENT_SUBMITTED':
@@ -33,12 +33,14 @@ if (!function_exists('get_samc_admin_status_badge')) {
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The reviewer has completed the review.">Review Completed</span>';
             case 'AWAITING_ADMIN_VALIDATION':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="The review result is awaiting admin validation.">Awaiting Admin Validation</span>';
-            case 'APPROVED':
-                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The document has been approved.">Approved</span>';
-            case 'APPROVED_WITH_AMENDMENTS':
+            case 'ACCEPT':
+                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="Assessor have reviewed and accepted the SAMC.">Accepted</span>';
+            case 'ACCEPT_WITH_AMENDMENT':
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="The document is approved but requires amendments.">Approved with Amendments</span>';
-            case 'REJECTED':
+            case 'RETURN':
                 return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The document has been rejected.">Rejected</span>';
+            case 'Returned':
+                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The SAMC has been returned by Admin.">Returned</span>';
             default:
                 return '<span class="badge bg-gradient-secondary" data-bs-toggle="tooltip" title="The status of the document is unknown.">Unknown Status</span>';
         }
@@ -60,12 +62,12 @@ if (!function_exists('get_samc_asr_status_badge')) {
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The reviewer has completed the review.">Review Completed</span>';
             case 'AWAITING_ADMIN_VALIDATION':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="The review result is awaiting admin validation.">Awaiting Admin Validation</span>';
-            case 'APPROVED':
-                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The document has been approved.">Approved</span>';
-            case 'APPROVED_WITH_AMENDMENTS':
-                return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="The document is approved but requires amendments.">Approved with Amendments</span>';
-            case 'REJECTED':
-                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The document has been rejected.">Rejected</span>';
+            case 'ACCEPT':
+                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="You have reviewed and accepted the SAMC. The result has been successfully submitted to the system.">Accepted</span>';
+            case 'ACCEPT_WITH_AMENDMENT':
+                return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="You have reviewed the SAMC and accepted it with amendments. The result has been successfully submitted to the system.">Accepted with Amendments</span>';
+            case 'RETURN':
+                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="Your review of the SAMC has been completed, and the return result has been submitted to the system.">Return</span>';
             default:
                 return '<span class="badge bg-gradient-secondary" data-bs-toggle="tooltip" title="The status of the document is unknown.">Unknown Status</span>';
         }
@@ -82,7 +84,7 @@ if (!function_exists('get_samc_pvd_status_badge')) {
             case 'PENDING_PAYMENT':
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Payment</span>';
             case 'PENDING_INVOICE_PAYMENT':
-                return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Invoice Payment</span>';
+                return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="User has completed registration but has not made the payment.">Pending Invoice Payment</span>';
             case 'PENDING_CHECK':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="Provider has submit payment proof. Please validate.">Pending Payment Approval</span>';
             case 'PAYMENT_SUBMITTED':
@@ -100,7 +102,7 @@ if (!function_exists('get_samc_pvd_status_badge')) {
             case 'AWAITING_REVIEWER_ASSIGNMENT': //REPLACED WITH PAID & PAYMENT APPROVED
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="User is waiting for admin to assign a reviewer.">Awaiting Reviewer Assignment</span>';
             case 'AWAITING_REVIEWER_RESPONSE':
-                return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="Waiting for the reviewer to accept or reject the review request.">Awaiting Reviewer Response</span>';
+                return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="Waiting for the reviewer to accept or reject the review request.">Awaiting Reviewer Response</span>';
             case 'AWAITING_REVIEWER_REVIEW':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="Waiting for the user to complete the reviewing process.">Awaiting Review</span>';
             case 'AWAITING_USER_REVIEW':
@@ -109,14 +111,48 @@ if (!function_exists('get_samc_pvd_status_badge')) {
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The reviewer has completed the review.">Review Completed</span>';
             case 'AWAITING_ADMIN_VALIDATION':
                 return '<span class="badge bg-gradient-info" data-bs-toggle="tooltip" title="The review result is awaiting admin validation.">Awaiting Admin Validation</span>';
-            case 'APPROVED':
-                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="The document has been approved.">Approved</span>';
-            case 'APPROVED_WITH_AMENDMENTS':
+            case 'ACCEPT':
+                return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip" title="Assessor have reviewed and accepted the SAMC.">Accepted</span>';
+            case 'ACCEPT_WITH_AMENDMENT':
                 return '<span class="badge bg-gradient-warning" data-bs-toggle="tooltip" title="The document is approved but requires amendments.">Approved with Amendments</span>';
-            case 'REJECTED':
+            case 'RETURN':
                 return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The document has been rejected.">Rejected</span>';
+            case 'Returned':
+                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip" title="The SAMC has been returned by Admin, please recheck and resubmit.">Returned</span>';
             default:
                 return '<span class="badge bg-gradient-secondary" data-bs-toggle="tooltip" title="The status of the document is unknown.">Unknown Status</span>';
+        }
+    }
+}
+// Get status for Provider table
+if (!function_exists('get_samc_pvd_table_status_badge')) {
+    function get_samc_pvd_table_status_badge($status)
+    {
+        switch ($status) {
+            case 'DRAFT':
+                return '<span hidden>Draft</span>';
+            case 'PENDING_PAYMENT':
+                return '<span hidden>Payment Processing</span>';
+            case 'PENDING_INVOICE_PAYMENT':
+                return '<span hidden>Payment Processing</span>';
+            case 'PENDING_CHECK':
+                return '<span hidden>Payment Processing</span>';
+            case 'Returned':
+                return '<span hidden>Returned</span>';
+            case 'AWAITING_REVIEWER_ASSIGNMENT': //REPLACED WITH PAID & PAYMENT APPROVED
+                return '<span hidden>Review in Progress</span>';
+            case 'AWAITING_REVIEWER_RESPONSE':
+                return '<span hidden>Review in Progress</span>';
+            case 'AWAITING_REVIEWER_REVIEW':
+                return '<span hidden>Review in Progress</span>';
+            case 'RETURN':
+                return '<span hidden>Returned</span>';
+            case 'ACCEPT':
+                return '<span hidden>Accepted</span>';
+            case 'ACCEPT_WITH_AMENDMENT':
+                return '<span hidden>Amendment</span>';
+            default:
+                return '<span class="badge bg-gradient-secondary" data-bs-toggle="tooltip" title="The status of the document is unknown.">apa pun saya taratau</span>';
         }
     }
 }
@@ -130,6 +166,8 @@ if (!function_exists('get_samc_review_status_badge')) {
                 return '<span class="badge bg-gradient-success" data-bs-toggle="tooltip">ACCEPTED</span>';
             case 'not_accepted':
                 return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip">NOT ACCEPTED</span>';
+            case 'decide_later':
+                return '<span class="badge bg-gradient-danger" data-bs-toggle="tooltip">APP WILL DECIDE LATER</span>';
             default:
                 return '<span class="badge bg-gradient-secondary" data-bs-toggle="tooltip" title="The status of the document is unknown.">Unknown Status</span>';
         }

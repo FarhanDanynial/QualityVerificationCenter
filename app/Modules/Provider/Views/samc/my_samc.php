@@ -119,9 +119,9 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Assignments</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">My SAMC</p>
                                             <h5 class="font-weight-bolder mb-0">
-
+                                                <?= count($samc_info ?? []) ?>
                                             </h5>
                                         </div>
                                     </div>
@@ -140,30 +140,16 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">In Progress</p>
-                                            <h5 class="font-weight-bolder mb-0">
-
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="icon icon-shape bg-gradient-info shadow text-center rounded-circle">
-                                            <i class="fas fa-sync-alt text-white opacity-10"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                        <div class="card">
-                            <div class="card-body p-3">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div class="numbers">
                                             <p class="text-sm mb-0 text-uppercase font-weight-bold">Completed</p>
                                             <h5 class="font-weight-bolder mb-0">
-
+                                                <?php
+                                                $completed_samc = 0;
+                                                foreach ($samc_info ?? [] as $samc) {
+                                                    if ($samc->samc_status == 'ACCEPT')
+                                                        $completed_samc++;
+                                                }
+                                                echo $completed_samc;
+                                                ?>
                                             </h5>
                                         </div>
                                     </div>
@@ -182,14 +168,49 @@
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">In Progress</p>
                                             <h5 class="font-weight-bolder mb-0">
-
+                                                <?php
+                                                $in_progress = 0;
+                                                foreach ($samc_info ?? [] as $samc) {
+                                                    if ($samc->samc_status == 'AWAITING_REVIEWER_ASSIGNMENT' || $samc->samc_status == 'AWAITING_REVIEWER_RESPONSE' || $samc->samc_status == 'AWAITING_REVIEWER_REVIEW' || $samc->samc_status == 'PENDING_CHECK')
+                                                        $in_progress++;
+                                                }
+                                                echo $in_progress;
+                                                ?>
                                             </h5>
                                         </div>
                                     </div>
                                     <div class="col-4 text-end">
                                         <div class="icon icon-shape bg-gradient-warning shadow text-center rounded-circle">
+                                            <i class="fas fa-sync-alt text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Need Attention</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $in_progress = 0;
+                                                foreach ($samc_info ?? [] as $samc) {
+                                                    if ($samc->samc_status == 'Returned' || $samc->samc_status == 'RETURN' || $samc->samc_status == 'ACCEPT_WITH_AMENDMENT')
+                                                        $in_progress++;
+                                                }
+                                                echo $in_progress;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-danger shadow text-center rounded-circle">
                                             <i class="fas fa-hourglass-half text-white opacity-10"></i>
                                         </div>
                                     </div>
@@ -200,53 +221,54 @@
                 </div>
             </div>
 
-            <!-- Filter & Controls -->
-            <div class="card mb-4">
+            <!-- SAMC Table -->
+            <div class="card mb-3">
                 <div class="card-body p-3">
-                    <div class="row align-items-center">
-                        <div class="col-lg-8 col-md-7">
-                            <div class="d-flex flex-wrap gap-2">
-                                <button class="filter-btn btn bg-gradient-secondary" data-filter="Draft" style="font-size: 12px;">
-                                    <i class="fas fa-list-alt me-1"></i> Draft
-                                </button>
-                                <button class="filter-btn btn bg-gradient-warning" data-filter="Pending Payment" style="font-size: 12px;">
-                                    <i class="fas fa-spinner me-1"></i> Pending Payment
-                                </button>
-                                <button class="filter-btn btn bg-gradient-success" data-filter="Paid" style="font-size: 12px;">
-                                    <i class="fas fa-award me-1"></i> Paid
-                                </button>
+                    <!-- Filter & Controls -->
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8 col-md-7">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
+                                        <i class="fas fa-th-list me-1"></i> All
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-danger" data-filter="Draft" style="font-size: 12px;">
+                                        <i class="fas fa-list-alt me-1"></i> Draft
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-info" data-filter="Payment Processing" style="font-size: 12px;">
+                                        <i class="fas fa-spinner me-1"></i> Payment Processing
+                                    </button>
 
-                                <button class="filter-btn btn bg-gradient-primary" data-filter="Reviewed" style="font-size: 12px;">
-                                    <i class="fas fa-check-circle me-1"></i> Reviewed
-                                </button>
-                                <button class="filter-btn btn bg-gradient-warning" data-filter="Conditional Pass" style="font-size: 12px;">
-                                    <i class="fas fa-clipboard-check me-1"></i> Conditional
-                                </button>
-                                <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
-                                    <i class="fas fa-th-list me-1"></i> All
-                                </button>
-                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    Export
-                                </button>
+                                    <button class="filter-btn btn bg-gradient-info" data-filter="Review in Progress" style="font-size: 12px;">
+                                        <i class="fas fa- fa-spinner me-1"></i> Review in Progress
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-success" data-filter="Accepted" style="font-size: 12px;">
+                                        <i class="fas fa-award me-1"></i> Accepted
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-warning" data-filter="Amendment" style="font-size: 12px;">
+                                        <i class="fas fa-clipboard-check me-1"></i> Amendment
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-danger" data-filter="Returned" style="font-size: 12px;">
+                                        <i class="fas fa-exclamation-circle me-1"></i> Returned
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
-                            <div class="d-flex align-items-center justify-content-md-end">
-                                <a href="<?= base_url('provider/samc/new_samc') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    <i class="fas fa-credit-card"></i> New SAMC
-                                </a>
-                                <a href="<?= base_url('provider/payment/checkout') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    <i class="fas fa-credit-card"></i> Make Payment
-                                </a>
+                            <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
+                                <div class="d-flex align-items-center justify-content-md-end">
+                                    <a href="<?= base_url('provider/samc/new_samc') ?>" class="btn bg-gradient-primary me-2" style="font-size: 12px;">
+                                        <i class="fas fa-credit-card"></i> New SAMC
+                                    </a>
+                                    <a href="<?= base_url('provider/payment/checkout') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
+                                        <i class="fas fa-credit-card"></i> Make Payment
+                                    </a>
+                                    <!-- <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
+                                        Export
+                                    </button> -->
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- SAMC Table -->
-            <div class="card">
-                <div class="card-body p-3">
                     <div class="table-responsive">
                         <table class="table" id="datatable-search">
                             <thead>
@@ -269,6 +291,7 @@
                                             </td>
                                             <td>
                                                 <?= get_samc_pvd_status_badge($samc->samc_status) ?>
+                                                <?= get_samc_pvd_table_status_badge($samc->samc_status) ?>
                                             </td>
                                             <td>
                                                 <div class="date-container">
@@ -309,15 +332,33 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="action-container justify-content-center">
-                                                    <a href="<?= base_url('provider/getSamcData/' . $samc->samc_id) ?>"
-                                                        class="btn btn-sm bg-gradient-info action-icon"
-                                                        data-bs-toggle="tooltip" title="Details">
-                                                        <i class="fas fa-info-circle" style="font-size: 12px;"></i>
-                                                    </a>
+                                                    <!-- Display when SAMC has been Accepted -->
+                                                    <?php if (in_array($samc->samc_status, ['ACCEPT'])): ?>
+                                                        <a href="<?= base_url('provider/getSamcData/' . $samc->samc_id) ?>"
+                                                            class="btn btn-sm bg-gradient-info action-icon"
+                                                            data-bs-toggle="tooltip" title="Details">
+                                                            <i class="fas fa-info-circle" style="font-size: 16px;"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                    <!-- Display when SAMC has is Draft / Returned -->
                                                     <?php if (in_array($samc->samc_status, ['DRAFT', 'Returned'])): ?>
                                                         <a href="<?= base_url('provider/samc/edit_samc_form/') . $samc->samc_id ?>"
-                                                            class="btn btn-sm bg-gradient-success action-icon">
+                                                            class="btn btn-sm bg-gradient-warning action-icon">
                                                             <i class="fas fa-edit" style="font-size: 16px;"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                    <!-- Display if APP Reject -->
+                                                    <?php if (in_array($samc->samc_status, ['ACCEPT_WITH_AMENDMENT', 'RETURN'])): ?>
+                                                        <a href="<?= base_url('provider/review_samc/get_samc_review_result/') . $samc->samc_id ?>"
+                                                            class="btn btn-sm bg-gradient-success action-icon" data-bs-toggle="tooltip" title="Review Result">
+                                                            <i class="fas fa-eye" style="font-size: 16px;"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                    <!-- Display During Pending -->
+                                                    <?php if (in_array($samc->samc_status, ['PENDING_CHECK', 'AWAITING_REVIEWER_ASSIGNMENT', 'AWAITING_REVIEWER_RESPONSE'])): ?>
+                                                        <a href="<?= base_url('provider/samc/view_samc/') . $samc->samc_id ?>"
+                                                            class="btn btn-sm bg-gradient-info action-icon" data-bs-toggle="tooltip" title="Review Result">
+                                                            <i class="fas fa-info-circle" style="font-size: 16px;"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>

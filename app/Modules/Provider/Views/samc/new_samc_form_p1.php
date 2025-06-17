@@ -8,18 +8,31 @@
 <link rel="stylesheet" href="<?= base_url('assets/css/custom_form_p1.css'); ?>">
 
 <div class="container-fluid py-4">
-    <div class="row mb-4">
+    <div class="row">
         <div class="col-12">
             <h4 class="section-title">SAMC Registration Form</h4>
         </div>
     </div>
 
-    <div class="row mb-3">
+    <?php if (!empty($samc_data) && isset($samc_data->samc_admin_remarks)): ?>
+        <div class="alert alert-dismissible fade show border border-danger text-danger pl-4 pr-4 pt-1 pb-1 position-relative" role="alert" style="background-color: transparent;">
+            <button type="button" class="btn position-absolute top-0 end-0 m-3 p-1 text-danger" data-bs-dismiss="alert" aria-label="Close" style="font-size: 1.25rem; box-shadow:none;">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="d-flex align-items-start">
+                <div>
+                    <strong>Rejection Reason!</strong><br>
+                    <?= $samc_data->samc_admin_remarks ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+    <div class="row mb-3 pt-3">
         <div class="col-12">
             <div class="multisteps-form">
                 <div class="row">
                     <div class="col-12">
-                        <div class="multisteps-form__progress">
+                        <div class="multisteps-form__progress mt-4">
                             <button class="multisteps-form__progress-btn js-active" type="button">
                                 <div class="step-icon">
                                     <i class="fas fa-file-alt"></i>

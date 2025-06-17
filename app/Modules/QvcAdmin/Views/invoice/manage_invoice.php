@@ -113,78 +113,23 @@
             </div>
             <div class="card-body p-0 mt-4">
                 <div class="row mb-0">
+                    <!-- Pending Payment -->
                     <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
                         <div class="card">
                             <div class="card-body p-3">
                                 <div class="row">
                                     <div class="col-8">
                                         <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending Checking</p>
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending Payment</p>
                                             <h5 class="font-weight-bolder mb-0">
-
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="icon icon-shape bg-gradient-primary shadow text-center rounded-circle">
-                                            <i class="fas fa-clipboard text-white opacity-10"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                        <div class="card">
-                            <div class="card-body p-3">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Paid</p>
-                                            <h5 class="font-weight-bolder mb-0">
-
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="icon icon-shape bg-gradient-info shadow text-center rounded-circle">
-                                            <i class="fas fa-sync-alt text-white opacity-10"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                        <div class="card">
-                            <div class="card-body p-3">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Rejected</p>
-                                            <h5 class="font-weight-bolder mb-0">
-
-                                            </h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-end">
-                                        <div class="icon icon-shape bg-gradient-success shadow text-center rounded-circle">
-                                            <i class="fas fa-check text-white opacity-10"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
-                        <div class="card">
-                            <div class="card-body p-3">
-                                <div class="row">
-                                    <div class="col-8">
-                                        <div class="numbers">
-                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending</p>
-                                            <h5 class="font-weight-bolder mb-0">
-
+                                                <?php
+                                                $pending_payment_invoice = 0;
+                                                foreach ($invoice_info ?? [] as $invoice) {
+                                                    if ($invoice->sp_status == 'unpaid')
+                                                        $pending_payment_invoice++;
+                                                }
+                                                echo $pending_payment_invoice;
+                                                ?>
                                             </h5>
                                         </div>
                                     </div>
@@ -197,13 +142,107 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Pending Checking -->
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending Checking</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $pending_invoice = 0;
+                                                foreach ($invoice_info ?? [] as $invoice) {
+                                                    if ($invoice->sp_status == 'PENDING_CHECK')
+                                                        $pending_invoice++;
+                                                }
+                                                echo $pending_invoice;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-primary shadow text-center rounded-circle">
+                                            <i class="fas fa-search text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paid -->
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Paid</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $paid_invoice = 0;
+                                                foreach ($invoice_info ?? [] as $invoice) {
+                                                    if ($invoice->sp_status == 'PAID')
+                                                        $paid_invoice++;
+                                                }
+                                                echo $paid_invoice;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-success shadow text-center rounded-circle">
+                                            <i class="fas fa-money-bill-wave text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rejected -->
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Rejected</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?php
+                                                $return_invoice = 0;
+                                                foreach ($invoice_info ?? [] as $invoice) {
+                                                    if ($invoice->sp_status == 'PAYMENT_PROOF_REJECTED')
+                                                        $return_invoice++;
+                                                }
+                                                echo $return_invoice;
+                                                ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-danger shadow text-center rounded-circle">
+                                            <i class="fas fa-times text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
 
-            <!-- Filter & Controls -->
-            <div class="card mb-4 mt-4">
+
+            <!-- SAMC Table -->
+            <div class="card mb-3">
                 <div class="card-body p-3">
-                    <div class="row align-items-center">
+                    <!-- Filter & Controls -->
+                    <div class="row align-items-center p-3">
                         <div class="col-lg-8 col-md-7">
                             <div class="d-flex flex-wrap gap-2">
                                 <button class="filter-btn btn bg-gradient-secondary" data-filter="Invoice" style="font-size: 12px;">
@@ -215,32 +254,17 @@
                                 <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
                                     <i class="fas fa-th-list me-1"></i> All
                                 </button>
-                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
+                                <!-- <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
                                     Export
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
-                            <div class="d-flex align-items-center justify-content-md-end">
-                                <a href="<?= base_url('provider/samc/new_samc') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    <i class="fas fa-credit-card"></i> New SAMC
-                                </a>
-                                <a href="<?= base_url('provider/payment/checkout') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    <i class="fas fa-credit-card"></i> Make Payment
-                                </a>
+                                </button> -->
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- SAMC Table -->
-            <div class="card mb-3">
-                <div class="card-body p-3">
                     <div class="table-responsive">
                         <table class="table" id="datatable-search">
                             <thead>
                                 <tr>
+                                    <th class="text-center" style="width:60px;">No.</th>
                                     <th class="text-center" style="width:60px;">Invoice No.</th>
                                     <th>Amount (RM)</th>
                                     <th>Invoice Date</th>
@@ -255,6 +279,7 @@
                                 if (!empty($invoice_info)):
                                     foreach ($invoice_info as $invoice): ?>
                                         <tr>
+                                            <td class="text-center"><?= $counter++; ?></td>
                                             <td>
                                                 <h6 class="mb-0 text-sm"><?= $invoice->sp_invoice_number ?></h6>
                                             </td>
@@ -294,14 +319,14 @@
                                                         <a href="<?= base_url('qvcAdmin/invoice/fetch_invoice_details/' . $invoice->sp_invoice_number) ?>"
                                                             class="btn btn-sm bg-gradient-info action-icon"
                                                             data-bs-toggle="tooltip" title="Invoice Details">
-                                                            <i class="fas fa-info-circle" style="font-size: 12px;"></i>
+                                                            <i class="fas fa-info-circle" style="font-size: 16px;"></i>
                                                         </a>
                                                     <?php elseif ($invoice->sp_method == 'FPX') : ?>
                                                         <!-- Display Payment Prove -->
                                                         <a href="<?= base_url('provider/payment/checkout') ?>"
                                                             class="btn btn-sm bg-gradient-info action-icon"
                                                             data-bs-toggle="tooltip" title="Details">
-                                                            <i class="fas fa-info-circle" style="font-size: 12px;"></i>
+                                                            <i class="fas fa-info-circle" style="font-size: 16px;"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>

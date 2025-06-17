@@ -38,6 +38,36 @@ class ProviderController extends BaseController
             ->where('samc_pvd_id', $pvd_id)
             ->findAll();
 
+        // SAMC Chart Data
+        $chart_draft = $this->samc_model
+            ->where('samc_pvd_id', $pvd_id)
+            ->where('samc_status', 'DRAFT')
+            ->countAllResults();
+
+        $chart_pending_payment = $this->samc_model
+            ->where('samc_pvd_id', $pvd_id)
+            ->where('samc_status', 'PENDING_PAYMENT')
+            ->countAllResults();
+
+        $chart_in_progress = $this->samc_model
+            ->where('samc_pvd_id', $pvd_id)
+            ->whereIn('samc_status', ['AWAITING_REVIEWER_REVIEW', 'AWAITING_REVIEWER_RESPONSE', 'PENDING_CHECK', 'AWAITING_REVIEWER_ASSIGNMENT'])
+            ->countAllResults();
+
+        $chart_return = $this->samc_model
+            ->where('samc_pvd_id', $pvd_id)
+            ->whereIn('samc_status', ['RETURN', 'Returned'])
+            ->countAllResults();
+
+        $chart_accept_with_amendment = $this->samc_model
+            ->where('samc_pvd_id', $pvd_id)
+            ->where('samc_status', 'ACCEPT_WITH_AMENDMENT')
+            ->countAllResults();
+        $chart_accept = $this->samc_model
+            ->where('samc_pvd_id', $pvd_id)
+            ->where('samc_status', 'ACCEPT')
+            ->countAllResults();
+
         // Fetch Notifications Data
         $notification = $this->notification_model
             ->where('n_user_type', 'provider')  // Filter by user type
@@ -60,11 +90,17 @@ class ProviderController extends BaseController
 
         // Get provider details from the session
         $data = [
-            'provider_info'             => $provider_info,
-            'notifications'             => $notification,
-            'unread_notifications'      => $unread_notifications,
-            'pvd_samc'                  => $pvd_samc,
-            'samc_field'                => $samc_field
+            'provider_info'                 => $provider_info,
+            'notifications'                 => $notification,
+            'unread_notifications'          => $unread_notifications,
+            'pvd_samc'                      => $pvd_samc,
+            'samc_field'                    => $samc_field,
+            'chart_draft'                   => $chart_draft,
+            'chart_in_progress'             => $chart_in_progress,
+            'chart_return'                  => $chart_return,
+            'chart_accept_with_amendment'   => $chart_accept_with_amendment,
+            'chart_accept'                  => $chart_accept,
+            'chart_pending_payment'         => $chart_pending_payment,
         ];
 
         $this->render_provider('dashboard', $data);

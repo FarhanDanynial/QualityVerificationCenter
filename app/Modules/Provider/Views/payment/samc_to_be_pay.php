@@ -109,37 +109,91 @@
     <div class="row">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center p-0 pt-3">
-                <h2 class="mb-0 fs-4 fw-bold">SAMC To Pay</h2>
+                <h2 class="mb-0 fs-4 fw-bold">Pending Payment</h2>
             </div>
-
-            <!-- Filter & Controls -->
-            <div class="card mb-4 mt-4">
-                <div class="card-body p-3">
-                    <div class="row align-items-center">
-                        <div class="col-lg-8 col-md-7">
-                            <div class="d-flex flex-wrap gap-2">
-                                <button class="filter-btn btn bg-gradient-secondary" data-filter="Invoice" style="font-size: 12px;">
-                                    <i class="fas fa-list-alt me-1"></i> Invoice
-                                </button>
-                                <button class="filter-btn btn bg-gradient-warning" data-filter="FPX" style="font-size: 12px;">
-                                    <i class="fas fa-spinner me-1"></i> FPX
-                                </button>
-                                <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
-                                    <i class="fas fa-th-list me-1"></i> All
-                                </button>
-                                <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    Export
-                                </button>
+            <div class="card-body p-0 mt-4">
+                <div class="row mb-0">
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Total Pending SAMC</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                <?= $total_paid_samc ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-primary shadow text-center rounded-circle">
+                                            <i class="fas fa-clipboard text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-5 mt-3 mt-md-0">
-                            <div class="d-flex align-items-center justify-content-md-end">
-                                <a href="<?= base_url('provider/samc/new_samc') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    <i class="fas fa-credit-card"></i> New SAMC
-                                </a>
-                                <a href="<?= base_url('provider/payment/checkout') ?>" class="btn bg-gradient-success me-2" style="font-size: 12px;">
-                                    <i class="fas fa-credit-card"></i> Make Payment
-                                </a>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending Invoice Payment</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                RM <?= $invoice_amount ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-info shadow text-center rounded-circle">
+                                            <i class="fas fa-file-invoice-dollar text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Pending FPX Payment</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                RM <?= $fpx_amount ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-success shadow text-center rounded-circle">
+                                            <i class="fas fa-credit-card text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-6 col-md-6 mb-3">
+                        <div class="card">
+                            <div class="card-body p-3">
+                                <div class="row">
+                                    <div class="col-8">
+                                        <div class="numbers">
+                                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Amount to be Paid</p>
+                                            <h5 class="font-weight-bolder mb-0">
+                                                RM <?= $fpx_amount + $invoice_amount ?>
+                                            </h5>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-end">
+                                        <div class="icon icon-shape bg-gradient-warning shadow text-center rounded-circle">
+                                            <i class="fas fa-dollar-sign text-white opacity-10"></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -149,17 +203,40 @@
             <!-- SAMC Table -->
             <div class="card mb-3">
                 <div class="card-body p-3">
+                    <!-- Filter & Controls -->
+                    <div class="card-body p-3">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8 col-md-7">
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="filter-btn btn bg-gradient-secondary" data-filter="Invoice" style="font-size: 12px;">
+                                        <i class="fas fa-list-alt me-1"></i> Invoice
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-warning" data-filter="FPX" style="font-size: 12px;">
+                                        <i class="fas fa-spinner me-1"></i> FPX
+                                    </button>
+                                    <button class="filter-btn btn bg-gradient-dark" data-filter="" style="font-size: 12px;">
+                                        <i class="fas fa-th-list me-1"></i> All
+                                    </button>
+                                    <button id="export-btn" class="btn bg-gradient-success me-2" style="font-size: 12px;">
+                                        Export
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="table-responsive">
                         <table class="table" id="datatable-search">
                             <thead>
                                 <tr>
-                                    <th class="text-center" style="width:60px;">Invoice No.</th>
-                                    <th>Amount (RM)</th>
-                                    <th>Invoice Date</th>
-                                    <th>Last Payment Date</th>
-                                    <th style="width:170px;">Payment Method</th>
-                                    <th style="width:170px;">Status</th>
-                                    <th style="width:120px;" class="text-center">Actions</th>
+                                    <th style="max-width:50px;">No.</th>
+                                    <th>Invoice No.</th>
+                                    <th style="max-width:100px;">Amount (RM)</th>
+                                    <th style="max-width:100px;">Invoice Date</th>
+                                    <th style="max-width:100px;">Last Payment Date</th>
+                                    <th style="max-width:100px;">Payment Method</th>
+                                    <th style="width:100px;">Status</th>
+                                    <th style="width:100px;" class="text-center">Actions</th>
+                                </tr>
                                 </tr>
                             </thead>
                             <tbody>
@@ -168,13 +245,21 @@
                                     foreach ($invoice_info as $invoice): ?>
                                         <tr>
                                             <td>
+                                                <h6 class="mb-0 text-sm"><?= $counter++ ?></h6>
+                                            </td>
+                                            <td>
                                                 <h6 class="mb-0 text-sm"><?= $invoice->sp_invoice_number ?></h6>
                                             </td>
                                             <td>
                                                 <h6 class="mb-0 text-sm"><?= $invoice->sp_amount ?></h6>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm"><?= $invoice->sp_created_at ?></h6>
+                                                <h6 class="mb-0 text-sm">
+                                                    <span class="badge bg-light text-dark">
+                                                        <i class="fas fa-paper-plane text-primary me-1"></i>
+                                                        <?= date('d M Y', strtotime($invoice->sp_created_at)) ?>
+                                                    </span>
+                                                </h6>
                                             </td>
                                             <td>
                                                 <?php
@@ -182,10 +267,27 @@
                                                 $tarikh_akhir = clone $tarikh_invois; // Clone it if it's a DateTime object
                                                 $tarikh_akhir->modify('+30 days');
                                                 ?>
-                                                <h6 class="mb-0 text-sm"><?= $tarikh_akhir->format('d/m/Y') ?></h6>
+                                                <h6 class="mb-0 text-sm">
+                                                    <span class="badge bg-light text-dark">
+                                                        <i class="fas fa-calendar-times text-danger me-1"></i>
+                                                        <?= $tarikh_akhir->format('d M Y') ?>
+                                                    </span>
+                                                </h6>
                                             </td>
                                             <td>
-                                                <h6 class="mb-0 text-sm"><?= $invoice->sp_method ?></h6>
+                                                <h6 class="mb-0 text-sm">
+                                                    <?php if ($invoice->sp_method == 'INVOICE'): ?>
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="fas fa-file-invoice-dollar text-success me-1"></i>
+                                                            <?= $invoice->sp_method ?>
+                                                        </span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="fas fa-credit-card text-success me-1"></i>
+                                                            <?= $invoice->sp_method ?>
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </h6>
                                             </td>
                                             <td>
                                                 <?= get_samc_pvd_status_badge($invoice->sp_status) ?>
@@ -204,14 +306,14 @@
                                                         </a>
 
                                                         <!-- Upload Payment Proof Button -->
-                                                        <button type="button"
+                                                        <!-- <button type="button"
                                                             class="btn btn-sm bg-gradient-warning action-icon upload-proof-btn"
                                                             data-bs-toggle="modal"
                                                             data-bs-target="#uploadProofModal"
                                                             data-invoice-id="<?= $invoice->sp_invoice_number ?>"
                                                             title="Upload Payment Proof">
                                                             <i class="fas fa-upload" style="font-size: 12px;"></i>
-                                                        </button>
+                                                        </button> -->
                                                     <?php elseif ($invoice->sp_method == 'FPX') : ?>
                                                         <!-- Display Payment Prove -->
                                                         <a href="<?= base_url('provider/payment/checkout') ?>"
@@ -418,12 +520,12 @@
                 [10, 25, 50, "All"]
             ],
             columnDefs: [{
-                    orderable: false,
-                    targets: [4]
+                    // orderable: false,
+                    // targets: [4]
                 }, // Disable sorting on the Actions column
                 {
                     className: "text-center",
-                    targets: [0, 3, 4]
+                    targets: [0, 2, 3, 4, 5]
                 } // Center align these columns
             ],
             order: [

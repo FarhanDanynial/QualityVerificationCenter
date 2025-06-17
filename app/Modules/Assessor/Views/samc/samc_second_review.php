@@ -627,7 +627,7 @@
                 <form method="post" id="samcReviewForm">
                     <?= csrf_field(); ?>
                     <input type="hidden" name="samc_id" value="<?= $samc_data->samc_id ?>">
-                    <input type="hidden" name="sr_counter" value="1"><!-- use when submit only -->
+                    <input type="hidden" name="sr_counter" value="3"><!-- use when submit only -->
 
                     <div class="assessment-section">
                         <div class="assessment-section-title">1. Course Details Evaluation</div>

@@ -438,12 +438,15 @@
 
     /* Action bar */
     .action-bar {
+        max-width: 976px !important;
+
         display: flex;
         align-items: center;
         justify-content: space-between;
         background-color: #fff;
         padding: 0.75rem 1.25rem;
-        margin-bottom: 1rem;
+        /* margin-bottom: 1rem; */
+        margin: 1.5rem auto;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
         transition: all 0.3s;
@@ -454,6 +457,7 @@
         color: var(--primary-color);
         margin-bottom: 0;
     }
+
 
     .btn {
         margin-bottom: 0.5rem !important;
@@ -468,9 +472,9 @@
         <p class="mb-0 text-muted small">Invoice #<?= $invoice_details->sp_invoice_number ?></p>
     </div>
     <div>
-        <a href="<?= base_url('provider/payment') ?>" class="btn btn-outline-secondary">
+        <!-- <a href="<?= base_url('provider/payment') ?>" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i> Back
-        </a>
+        </a> -->
         <!-- Check Invoice Status -->
         <?php if ($invoice_details->sp_status == 'unpaid') : ?>
             <a href="<?= base_url('provider/payment/edit_invoice') ?>" class="btn btn-outline-primary">

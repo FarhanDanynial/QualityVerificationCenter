@@ -381,14 +381,24 @@
                                                         Print PDF
                                                     </a>
 
-                                                    <button class="btn js-btn-draft bg-gradient-secondary" id="draftButton" type="submit"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Saved as draft, edit and submit later.">
-                                                        Draft
-                                                    </button>
-                                                    <button class="btn js-btn-next bg-gradient-info" id="submitButton" type="button"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Proceed to payment or add another samc">
-                                                        Proceed
-                                                    </button>
+                                                    <!-- check payment status -->
+                                                    <?php if ($payment_status == true): ?>
+                                                        <!-- Resubmit SAMC -->
+                                                        <button class="btn js-btn-resubmit bg-gradient-info" id="submitButton" type="button"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Re-submit your SAMC for review.">
+                                                            <i class="fas fa-redo me-2"></i>
+                                                            <span class="d-none d-sm-inline">Re-submit</span>
+                                                        </button>
+                                                    <?php else: ?>
+                                                        <button class="btn js-btn-draft bg-gradient-secondary" id="draftButton" type="submit"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Saved as draft, edit and submit later.">
+                                                            Draft
+                                                        </button>
+                                                        <button class="btn js-btn-next bg-gradient-info" id="submitButton" type="button"
+                                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Proceed to payment or add another samc">
+                                                            Proceed
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -407,6 +417,76 @@
 <!-- Step 5 Form Submit -->
 <script>
     $(document).ready(function() {
+
+        // Resubmit button click event
+        $('.js-btn-resubmit').on('click', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            let form = $('#step5_form');
+            let formData = form.serialize(); // Serialize form data
+
+            Swal.fire({
+                title: "Resubmit SAMC",
+                text: "No fee charge for resubmition.",
+                icon: "warning",
+                text: "Do you want to add another proforma or proceed to payment?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Proceed",
+                cancelButtonText: "Edit",
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    saveData("<?= site_url('provider/samc/resubmit_samc_form') ?>", "<?= site_url('provider/samc/my_samc') ?>");
+
+                    function saveData(saveUrl, redirectUrl) {
+                        Swal.fire({
+                            title: "Saving",
+                            html: "Please wait...",
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        $.ajax({
+                            url: saveUrl,
+                            type: "PUT",
+                            contentType: "application/json",
+                            headers: {
+                                'X-CSRF-TOKEN': '<?= csrf_hash() ?>' // Include CSRF token
+                            },
+                            data: JSON.stringify({}), // Empty data since ID is in session
+                            success: function(response) {
+                                Swal.fire({
+                                    title: "Saved!",
+                                    icon: "success",
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href = redirectUrl;
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: xhr.responseJSON?.message || "Something went wrong!",
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            }
+                        });
+                    }
+
+                } else {
+                    // Do nothing
+                }
+
+
+
+            });
+        });
+
         $('.js-btn-next').on('click', function(event) {
             event.preventDefault(); // Prevent default form submission
 

@@ -85,6 +85,9 @@ class CreateSamcReviewTable extends Migration
                 'type'       => 'VARCHAR',
                 'constraint' => 50,
             ],
+            'sr_review' => [
+                'type'       => 'TEXT',
+            ],
             'sr_review_status' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 50,

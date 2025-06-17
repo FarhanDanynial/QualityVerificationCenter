@@ -385,12 +385,15 @@
 
     /* Action bar */
     .action-bar {
+        max-width: 976px !important;
+
         display: flex;
         align-items: center;
         justify-content: space-between;
         background-color: #fff;
         padding: 0.75rem 1.25rem;
-        margin-bottom: 1rem;
+        /* margin-bottom: 1rem; */
+        margin: 1.5rem auto;
         border-radius: 10px;
         box-shadow: 0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08);
         transition: all 0.3s;
@@ -415,9 +418,9 @@
         <p class="mb-0 text-muted small">Invoice #<?= $invoice_details->sp_invoice_number ?></p>
     </div>
     <div>
-        <a href="<?= base_url('provider/payment') ?>" class="btn btn-outline-secondary">
+        <!-- <a href="<?= base_url('provider/payment') ?>" class="btn btn-outline-secondary">
             <i class="fas fa-arrow-left me-1"></i> Back
-        </a>
+        </a> -->
         <!-- Check Invoice Status -->
         <?php if ($pvd_details->pvd_id == $invoice_details->sp_pvd_id) : ?>
             <?php if ($invoice_details->sp_status == 'unpaid' || $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED') : ?>
@@ -519,7 +522,7 @@
                                 <td class="text-center"><?= $counter++; ?></td>
                                 <td>
                                     <div class="item-desc"><?= $item->samc_course_name ?></div>
-                                    <div class="item-subdesc">SAMC ID: <?= $item->spi_samc_id ?></div>
+                                    <!-- <div class="item-subdesc">SAMC ID: <?= $item->spi_samc_id ?></div> -->
                                 </td>
                                 <td class="text-center">1</td>
                                 <td class="text-end"><?= number_format(1000, 2) ?></td>
@@ -580,10 +583,10 @@
             </div>
             <!-- Add this to the button-group div in the invoice-footer section -->
             <div class="button-group">
-                <a href="<?= base_url('provider/invoice/download_invoice/') ?>" class="btn-download">
+                <a href="<?= base_url('provider/invoice/download_invoice/' . $invoice_details->sp_id) ?>" class="btn-download">
                     <i class="fas fa-download button-icon"></i> Download
                 </a>
-                <a href="<?= base_url('provider/invoice/print_invoice/') ?>" class="btn-print" target="_blank">
+                <a href="<?= base_url('provider/invoice/print_invoice/' . $invoice_details->sp_id) ?>" class="btn-print" target="_blank">
                     <i class="fas fa-print button-icon"></i> Print
                 </a>
                 <?php if ($invoice_details->sp_status == 'unpaid') : ?>
@@ -612,61 +615,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <!-- Payment Information Section -->
-                <!-- <div class="payment-info-section mb-4"> -->
-                <!-- <h6 class="text-uppercase text-primary font-weight-bold mb-3">Payment Details</h6> -->
-                <!-- <div class="payment-details p-3 border border-light shadow-sm rounded-lg bg-gray-100"> -->
-                <!-- Invoice Info with icon -->
-                <!-- <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-                            <div class="icon-shape icon-sm rounded-circle bg-gradient-primary text-white me-3 text-center">
-                                <i class="fas fa-file-invoice"></i>
-                            </div>
-                            <div>
-                                <h6 class="text-dark mb-0 text-sm">Invoice Summary</h6>
-                                <div class="d-flex mt-2">
-                                    <div class="me-4">
-                                        <p class="text-xs mb-0 text-secondary">Amount</p>
-                                        <h6 class="font-weight-bold mb-0">RM <?= $invoice_details->sp_amount ?></h6>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs mb-0 text-secondary">Due Date</p>
-                                        <h6 class="font-weight-bold mb-0"><?= (new DateTime($invoice_details->sp_created_at))->modify('+30 days')->format('d/m/Y') ?></h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
-                <!-- Bank Info with icon -->
-                <!-- <div class="d-flex align-items-center">
-                            <div class="icon-shape icon-sm rounded-circle bg-gradient-success text-white me-3 text-center">
-                                <i class="fas fa-university"></i>
-                            </div>
-                            <div style="width: 100% !important;">
-                                <h6 class="text-dark mb-2 text-sm">Bank Details</h6>
-                                <div class="bg-white px-3 py-2 rounded border w-100">
-                                    <table class="table table-sm table-borderless mb-0">
-                                        <tbody>
-                                            <tr>
-                                                <td class="text-secondary text-xs ps-0" width="80px">Bank Name</td>
-                                                <td class="text-dark text-xs pe-0">BANK ISLAM MALAYSIA BERHAD (BIMB)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-secondary text-xs ps-0">Account No.</td>
-                                                <td class="text-dark font-weight-bold text-xs pe-0">08068010003264</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-secondary text-xs ps-0">Recipient</td>
-                                                <td class="text-dark text-xs pe-0">BENDAHARI UNIVERSITI PENDIDIKAN SULTAN IDRIS</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div> -->
-                <!-- </div> -->
-                <!-- </div> -->
-
-                <form action="<?= base_url('provider/invoice/submit_invoice_payment_proof/') ?>" method="post" enctype="multipart/form-data">
+                <form id="paymentProofUploadForm" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <input type="hidden" name="invoice_id" value="<?= $invoice_details->sp_id ?>">
                     <div class="row g-3">
@@ -711,6 +660,7 @@
     </div>
 </div>
 
+<!-- Update Modal -->
 <div class="modal fade" id="paymentProofModal" tabindex="-1" aria-labelledby="paymentProofModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content shadow-sm border-0">
@@ -719,36 +669,87 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-4">
-                <!-- Rejection Reason (if status is rejected) -->
-                <?php if (isset($invoice_details) && $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && !empty($invoice_details->sp_remarks)): ?>
-                    <div class="mt-1">
-                        <div class="alert border-danger">
-                            <div class="d-flex align-items-center mb-2">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                <h6 class="mb-0">Rejection Reason</h6>
-                            </div>
-                            <p class="mb-0"><?= $invoice_details->sp_remarks ?></p>
-                        </div>
-                    </div>
-                <?php endif; ?>
                 <form id="paymentProofUpdateForm" action="<?= base_url('provider/invoice/submit_invoice_payment_proof_update/') ?>" method="post" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <input type="hidden" name="invoice_id" value="<?= $invoice_details->sp_id ?>">
                     <div class="row g-3">
                         <?php if ($pvd_details->pvd_id == $invoice_details->sp_pvd_id) : ?>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="payment_date" class="form-control-label text-sm">Payment Date</label>
-                                    <input type="date" class="form-control form-control-sm" id="payment_date" name="payment_date" value="<?= isset($invoice_details->sp_payment_date) ? date('Y-m-d', strtotime($invoice_details->sp_payment_date)) : '' ?>" required>
+                            <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && $invoice_details->sp_prove) : ?>
+                                <div id="existing_proof_date" class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape icon-xs rounded-circle bg-gradient-info text-white me-3 text-center">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs mb-0 text-secondary">Payment Date</p>
+                                            <h6 class="font-weight-bold mb-0 text-sm"><?= isset($invoice_details->sp_payment_date) ? date('d/m/Y', strtotime($invoice_details->sp_payment_date)) : 'N/A' ?></h6>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="payment_reference" class="form-control-label text-sm">Reference Number</label>
-                                    <input type="text" class="form-control form-control-sm" id="payment_reference" name="payment_reference"
-                                        placeholder="Enter bank reference number" value="<?= isset($invoice_details->sp_reff_num) ? esc($invoice_details->sp_reff_num) : '' ?>" required>
+                                <div id="existing_proof_ref" class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape icon-xs rounded-circle bg-gradient-warning text-white me-3 text-center">
+                                            <i class="fas fa-hashtag"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs mb-0 text-secondary">Reference Number</p>
+                                            <h6 class="font-weight-bold mb-0 text-sm"><?= isset($invoice_details->sp_reff_num) ? $invoice_details->sp_reff_num : 'N/A' ?></h6>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                                <!-- If user delete attachment display this -->
+                                <div id="new_payment_date" class="col-md-6" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="payment_date" class="form-control-label text-sm">Payment Date</label>
+                                        <input type="date" class="form-control form-control-sm" id="payment_date" name="payment_date" value="<?= isset($invoice_details->sp_payment_date) ? date('Y-m-d', strtotime($invoice_details->sp_payment_date)) : '' ?>" required>
+                                    </div>
+                                </div>
+                                <div id="new_payment_ref" class="col-md-6" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="payment_reference" class="form-control-label text-sm">Reference Number</label>
+                                        <input type="text" class="form-control form-control-sm" id="payment_reference" name="payment_reference"
+                                            placeholder="Enter bank reference number" value="<?= isset($invoice_details->sp_reff_num) ? esc($invoice_details->sp_reff_num) : '' ?>" required>
+                                    </div>
+                                </div>
+                            <?php elseif ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && $invoice_details->sp_prove == null) : ?>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="payment_date" class="form-control-label text-sm">Payment Date</label>
+                                        <input type="date" class="form-control form-control-sm" id="payment_date" name="payment_date" value="<?= isset($invoice_details->sp_payment_date) ? date('Y-m-d', strtotime($invoice_details->sp_payment_date)) : '' ?>" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="payment_reference" class="form-control-label text-sm">Reference Number</label>
+                                        <input type="text" class="form-control form-control-sm" id="payment_reference" name="payment_reference"
+                                            placeholder="Enter bank reference number" value="<?= isset($invoice_details->sp_reff_num) ? esc($invoice_details->sp_reff_num) : '' ?>" required>
+                                    </div>
+                                </div>
+                            <?php else : ?>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape icon-xs rounded-circle bg-gradient-info text-white me-3 text-center">
+                                            <i class="fas fa-calendar"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs mb-0 text-secondary">Payment Date</p>
+                                            <h6 class="font-weight-bold mb-0 text-sm"><?= isset($invoice_details->sp_payment_date) ? date('d/m/Y', strtotime($invoice_details->sp_payment_date)) : 'N/A' ?></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="icon-shape icon-xs rounded-circle bg-gradient-warning text-white me-3 text-center">
+                                            <i class="fas fa-hashtag"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs mb-0 text-secondary">Reference Number</p>
+                                            <h6 class="font-weight-bold mb-0 text-sm"><?= isset($invoice_details->sp_reff_num) ? $invoice_details->sp_reff_num : 'N/A' ?></h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+
                         <?php else : ?>
                             <div class="col-md-6">
                                 <div class="d-flex align-items-center mb-3">
@@ -775,6 +776,23 @@
                         <?php endif; ?>
 
                         <div class="col-12">
+                            <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && $invoice_details->sp_prove && $pvd_details->pvd_id == $invoice_details->sp_pvd_id): ?>
+                                <!-- Status Badge and Delete Button in one line -->
+                                <div id="documentDeleteButton" class="d-flex justify-content-between align-items-center bg-danger mb-1 px-3 py-1 text-white" style="border-radius: 5px;">
+                                    <div class="alert border-danger p-0 m-0">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fas fa-exclamation-triangle"></i>
+                                            <h6 class="mb-0"> &nbsp; Rejection Reason</h6>
+                                        </div>
+                                        <p class="mb-0"><?= $invoice_details->sp_remarks ?></p>
+                                    </div>
+
+                                    <button type="button" class="btn bg-white btn-sm ms-2 text-danger" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)" title="Delete current proof to upload new one">
+                                        <i class="fas fa-trash me-1"></i>Replace Document
+                                    </button>
+                                </div>
+                            <?php endif; ?>
+
                             <!-- Document Preview -->
                             <div id="documentPreviewSection">
                                 <?php
@@ -785,33 +803,19 @@
                                     if (in_array(strtolower($file_extension), ['jpg', 'jpeg', 'png'])):
                                     ?>
                                         <!-- Image preview -->
-                                        <div class="position-relative">
+                                        <div id="documentPreview" class="position-relative">
                                             <img src="<?= base_url($invoice_details->sp_prove) ?>" alt="Payment Proof" class="img-fluid rounded shadow-sm" style="width: 100%;">
-
-                                            <!-- Delete button for rejected status -->
-                                            <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                                <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px;" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)">
-                                                    <i class="fas fa-trash me-1"></i> Delete
-                                                </button>
-                                            <?php endif; ?>
                                         </div>
                                     <?php elseif (strtolower($file_extension) === 'pdf'): ?>
                                         <!-- PDF file preview -->
-                                        <div class="position-relative">
+                                        <div id="documentPreview" class="position-relative">
                                             <iframe src="<?= site_url($invoice_details->sp_prove) . '#toolbar=0&navpanes=0&scrollbar=0&zoom=page-fit' ?>" width="100%" height="600px" style="border:1px solid #ccc;">
                                                 This browser does not support PDFs. Please download the PDF to view it:
                                             </iframe>
-
-                                            <!-- Delete button for rejected status -->
-                                            <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                                <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px;" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)">
-                                                    <i class="fas fa-trash me-1"></i> Delete
-                                                </button>
-                                            <?php endif; ?>
                                         </div>
                                     <?php else: ?>
                                         <!-- Generic file display -->
-                                        <div class="text-center">
+                                        <div id="documentPreview" class="text-center">
                                             <div class="document-icon mb-3">
                                                 <i class="fas fa-file-alt text-primary fa-5x"></i>
                                             </div>
@@ -820,46 +824,73 @@
                                                 <a href="<?= base_url($invoice_details->sp_prove) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
                                                     <i class="fas fa-download me-1"></i> Download File
                                                 </a>
-
-                                                <!-- Delete button for rejected status -->
-                                                <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                                    <button type="button" class="btn btn-sm btn-danger" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)">
-                                                        <i class="fas fa-trash me-1"></i> Delete
-                                                    </button>
-                                                <?php endif; ?>
-                                            </div>
-                                        </div>
-                                    <?php endif; ?>
-                                <?php else: ?>
-                                    <!-- No document uploaded yet -->
-                                    <div class="text-center">
-                                        <div class="document-icon mb-3">
-                                            <i class="fas fa-file-upload text-muted fa-5x"></i>
-                                        </div>
-                                        <h6 class="text-muted">No payment proof has been uploaded yet</h6>
-                                    </div>
-                                    <?php if (isset($invoice_details) && $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                        <div class="col-12">
-                                            <div class="form-group">
-                                                <label for="payment_proof" class="form-control-label text-sm">Upload Payment Prove</label>
-                                                <div class="input-group">
-                                                    <input type="file" class="form-control form-control-sm" id="payment_proof" name="payment_proof"
-                                                        accept="image/png, image/jpeg, image/jpg, application/pdf" required>
-                                                </div>
-                                                <small class="form-text text-xs text-muted">Accepted formats: PNG, JPEG, JPG, PDF (Max size: 2MB)</small>
                                             </div>
                                         </div>
                                     <?php endif; ?>
                                 <?php endif; ?>
+                                <?php $display_pp = (isset($invoice_details) && $invoice_details->sp_prove == null) ? 'block' : 'none'; ?>
+                                <!-- No document uploaded yet -->
+                                <div id="uploadProofSectionIcon" class="text-center" style="display: <?= $display_pp ?>;">
+                                    <div class="document-icon mb-3">
+                                        <i class="fas fa-file-upload text-muted fa-5x"></i>
+                                    </div>
+                                    <h6 class="text-muted">No payment proof has been uploaded yet</h6>
+                                </div>
+                                <?php
+                                $display = (isset($invoice_details) && $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'  && $invoice_details->sp_prove == null) ? 'block' : 'none';
+                                ?>
+                                <div id="uploadProofSection" class="col-12" style="display: <?= $display ?>;">
+                                    <div class="form-group">
+                                        <label for="payment_proof" class="form-control-label text-sm">Upload Payment Proof</label>
+                                        <div class="input-group">
+                                            <input type="file" class="form-control form-control-sm" id="payment_proof" name="payment_proof"
+                                                accept="image/png, image/jpeg, image/jpg, application/pdf" required>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-12">
                             <?php if ($pvd_details->pvd_id == $invoice_details->sp_pvd_id) : ?>
-                                <div class="form-group">
-                                    <label for="payment_notes" class="form-control-label text-sm">Additional Notes <span class="text-muted">(Optional)</span></label>
-                                    <textarea class="form-control form-control-sm" id="payment_notes" name="payment_notes" rows="3"
-                                        placeholder="Any additional information about the payment"><?= isset($invoice_details->sp_notes) ? esc($invoice_details->sp_notes) : '' ?></textarea>
-                                </div>
+                                <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && $invoice_details->sp_prove) : ?>
+                                    <div id="existing_notes" class="mt-4">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="icon-shape icon-xs rounded-circle bg-gradient-dark text-white me-3 text-center">
+                                                <i class="fas fa-sticky-note"></i>
+                                            </div>
+                                            <h6 class="text-dark mb-0 text-sm">Additional Notes</h6>
+                                        </div>
+                                        <div class="bg-white p-3 rounded border">
+                                            <p class="text-sm mb-0"><?= $invoice_details->sp_notes ?></p>
+                                        </div>
+                                    </div>
+                                    <div id="new_notes" class="form-group" style="display: none;">
+                                        <label for="payment_notes" class="form-control-label text-sm">Additional Notes <span class="text-muted">(Optional)</span></label>
+                                        <textarea class="form-control form-control-sm" id="payment_notes" name="payment_notes" rows="3"
+                                            placeholder="Any additional information about the payment"><?= isset($invoice_details->sp_notes) ? esc($invoice_details->sp_notes) : '' ?></textarea>
+                                    </div>
+                                <?php elseif ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && $invoice_details->sp_prove == null) : ?>
+                                    <div class="form-group">
+                                        <label for="payment_notes" class="form-control-label text-sm">Additional Notes <span class="text-muted">(Optional)</span></label>
+                                        <textarea class="form-control form-control-sm" id="payment_notes" name="payment_notes" rows="3"
+                                            placeholder="Any additional information about the payment"><?= isset($invoice_details->sp_notes) ? esc($invoice_details->sp_notes) : '' ?></textarea>
+                                    </div>
+                                <?php else : ?>
+                                    <?php if (isset($invoice_details) && !empty($invoice_details->sp_notes)): ?>
+                                        <div class="mt-4">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="icon-shape icon-xs rounded-circle bg-gradient-dark text-white me-3 text-center">
+                                                    <i class="fas fa-sticky-note"></i>
+                                                </div>
+                                                <h6 class="text-dark mb-0 text-sm">Additional Notes</h6>
+                                            </div>
+                                            <div class="bg-white p-3 rounded border">
+                                                <p class="text-sm mb-0"><?= $invoice_details->sp_notes ?></p>
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
+
+                                <?php endif; ?>
                             <?php else : ?>
                                 <?php if (isset($invoice_details) && !empty($invoice_details->sp_notes)): ?>
                                     <div class="mt-4">
@@ -880,166 +911,13 @@
                     </div>
 
                     <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn bg-gradient-primary btn-md">Submit Payment Proof</button>
+                        <?php
+                        $display_submit_btn = ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'  && $invoice_details->sp_prove == null) ? 'block' : 'none';
+                        ?>
+                        <button id="uploadProofSectionSubmitBtn" type="submit" class="btn bg-gradient-primary btn-md" style="display: <?= $display_submit_btn ?>;">Submit Payment Proof</button>
+
                     </div>
                 </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Payment Proof View Modal with improved Soft UI styling -->
-<div class="modal fade" id="//paymentProofModal" tabindex="-1" aria-labelledby="paymentProofModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl modal-dialog-centered">
-        <div class="modal-content shadow-sm border-0">
-            <div class="modal-header bg-gradient-primary text-white">
-                <h5 class="modal-title font-weight-bold" id="paymentProofModalLabel">Payment Proof Details</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body p-4">
-                <!-- Payment Proof Display Section -->
-                <div class="payment-proof-section mb-4">
-                    <!-- Rejection Reason (if status is rejected) -->
-                    <?php if (isset($invoice_details) && $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED' && !empty($invoice_details->sp_remarks)): ?>
-                        <div class="mt-1">
-                            <div class="alert alert-danger">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-exclamation-triangle me-2"></i>
-                                    <h6 class="mb-0">Rejection Reason</h6>
-                                </div>
-                                <p class="mb-0"><?= $invoice_details->sp_remarks ?></p>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-                    <div class="payment-proof-details p-3 border border-light shadow-sm rounded-lg bg-gray-100">
-                        <!-- Payment Details with icons -->
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="icon-shape icon-xs rounded-circle bg-gradient-info text-white me-3 text-center">
-                                        <i class="fas fa-calendar"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs mb-0 text-secondary">Payment Date</p>
-                                        <h6 class="font-weight-bold mb-0 text-sm"><?= isset($invoice_details->sp_payment_date) ? date('d/m/Y', strtotime($invoice_details->sp_payment_date)) : 'N/A' ?></h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-center mb-3">
-                                    <div class="icon-shape icon-xs rounded-circle bg-gradient-warning text-white me-3 text-center">
-                                        <i class="fas fa-hashtag"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-xs mb-0 text-secondary">Reference Number</p>
-                                        <h6 class="font-weight-bold mb-0 text-sm"><?= isset($invoice_details->sp_reff_num) ? $invoice_details->sp_reff_num : 'N/A' ?></h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Document Preview -->
-                        <div id="documentPreviewSection">
-                            <?php
-                            if (isset($invoice_details) && $invoice_details->sp_prove): ?>
-                                <?php
-                                $file_extension = pathinfo($invoice_details->sp_prove, PATHINFO_EXTENSION);
-
-                                if (in_array(strtolower($file_extension), ['jpg', 'jpeg', 'png'])):
-                                ?>
-                                    <!-- Image preview -->
-                                    <div class="position-relative">
-                                        <img src="<?= base_url($invoice_details->sp_prove) ?>" alt="Payment Proof" class="img-fluid rounded shadow-sm" style="width: 100%;">
-
-                                        <!-- Delete button for rejected status -->
-                                        <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                            <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px;" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)">
-                                                <i class="fas fa-trash me-1"></i> Delete
-                                            </button>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php elseif (strtolower($file_extension) === 'pdf'): ?>
-                                    <!-- PDF file preview -->
-                                    <div class="position-relative">
-                                        <iframe src="<?= site_url($invoice_details->sp_prove) . '#toolbar=0&navpanes=0&scrollbar=0&zoom=page-fit' ?>" width="100%" height="600px" style="border:1px solid #ccc;">
-                                            This browser does not support PDFs. Please download the PDF to view it:
-                                        </iframe>
-
-                                        <!-- Delete button for rejected status -->
-                                        <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                            <button type="button" class="btn btn-danger btn-sm position-absolute" style="top: 10px; right: 10px;" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)">
-                                                <i class="fas fa-trash me-1"></i> Delete
-                                            </button>
-                                        <?php endif; ?>
-                                    </div>
-                                <?php else: ?>
-                                    <!-- Generic file display -->
-                                    <div class="text-center">
-                                        <div class="document-icon mb-3">
-                                            <i class="fas fa-file-alt text-primary fa-5x"></i>
-                                        </div>
-                                        <h6 class="mb-2"><?= $invoice_details->sp_prove_filename ?></h6>
-                                        <div class="d-flex justify-content-center gap-2">
-                                            <a href="<?= base_url($invoice_details->sp_prove) ?>" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-download me-1"></i> Download File
-                                            </a>
-
-                                            <!-- Delete button for rejected status -->
-                                            <?php if ($invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                                <button type="button" class="btn btn-sm btn-danger" onclick="deletePaymentProof(<?= $invoice_details->sp_id ?>)">
-                                                    <i class="fas fa-trash me-1"></i> Delete
-                                                </button>
-                                            <?php endif; ?>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            <?php else: ?>
-                                <!-- No document uploaded yet -->
-                                <div class="text-center">
-                                    <div class="document-icon mb-3">
-                                        <i class="fas fa-file-upload text-muted fa-5x"></i>
-                                    </div>
-                                    <h6 class="text-muted">No payment proof has been uploaded yet</h6>
-                                </div>
-                                <?php if (isset($invoice_details) && $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                                    <div class="col-12">
-                                        <div class="form-group">
-                                            <label for="payment_proof" class="form-control-label text-sm">Upload Payment Prove</label>
-                                            <div class="input-group">
-                                                <input type="file" class="form-control form-control-sm" id="payment_proof" name="payment_proof"
-                                                    accept="image/png, image/jpeg, image/jpg, application/pdf" required>
-                                            </div>
-                                            <small class="form-text text-xs text-muted">Accepted formats: PNG, JPEG, JPG, PDF (Max size: 2MB)</small>
-                                        </div>
-                                    </div>
-                                <?php endif; ?>
-                            <?php endif; ?>
-                        </div>
-
-                        <!-- Upload Section for Rejected Status -->
-
-
-                        <!-- Additional Notes section (if available) -->
-                        <?php if (isset($invoice_details) && !empty($invoice_details->sp_notes)): ?>
-                            <div class="mt-4">
-                                <div class="d-flex align-items-center mb-2">
-                                    <div class="icon-shape icon-xs rounded-circle bg-gradient-dark text-white me-3 text-center">
-                                        <i class="fas fa-sticky-note"></i>
-                                    </div>
-                                    <h6 class="text-dark mb-0 text-sm">Additional Notes</h6>
-                                </div>
-                                <div class="bg-white p-3 rounded border">
-                                    <p class="text-sm mb-0"><?= $invoice_details->sp_notes ?></p>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php if (!isset($invoice_details) || $invoice_details->sp_status == 'PAYMENT_PROOF_REJECTED'): ?>
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn bg-gradient-primary btn-md">Submit Payment Proof</button>
-                    </div>
-                <?php endif; ?>
-
             </div>
         </div>
     </div>
@@ -1047,6 +925,10 @@
 
 <!-- JavaScript for handling file operations -->
 <script>
+    // CSRF token initialization
+    let csrfName = '<?= csrf_token() ?>';
+    let csrfHash = '<?= csrf_hash() ?>';
+
     // File input change handler
     document.getElementById('paymentProofFile')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
@@ -1074,7 +956,7 @@
         submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
 
         // Send AJAX request
-        fetch('<?= base_url('provider/invoice/upload-payment-proof') ?>', {
+        fetch('<?= base_url('provider/invoice/submit_invoice_payment_proof') ?>', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -1106,6 +988,53 @@
             });
     });
 
+    // Upload Payment Proof Form Submission
+    // Upload form submission
+    document.getElementById('paymentProofUpdateForm')?.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+
+        // Disable submit button and show loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Uploading...';
+
+        // Send AJAX request
+        fetch('<?= base_url('provider/invoice/submit_invoice_payment_proof_update') ?>', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    showAlert('success', 'Payment proof uploaded successfully!');
+
+                    // Reload the modal content or refresh the page
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
+                } else {
+                    showAlert('error', data.message || 'Failed to upload payment proof');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('error', 'An error occurred while uploading the file');
+            })
+            .finally(() => {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            });
+    });
+
+
     function deletePaymentProof(invoiceId) {
         Swal.fire({
             title: 'Are you sure?',
@@ -1118,55 +1047,49 @@
             cancelButtonColor: '#3085d6'
         }).then((result) => {
             if (result.isConfirmed) {
-                const csrfTokenName = "<?= csrf_token() ?>";
-                const csrfHash = "<?= csrf_hash() ?>";
+                $.ajax({
+                    url: "<?= base_url('provider/invoice/delete_payment_proof') ?>",
+                    type: "POST",
+                    data: {
+                        [csrfName]: csrfHash,
+                        invoice_id: invoiceId
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire("Deleted!", response.message, "success");
+                            // Update CSRF token after request
+                            csrfName = response.csrfName;
+                            csrfHash = response.csrfHash;
 
-                const requestData = {
-                    invoice_id: invoiceId
-                };
-                requestData[csrfTokenName] = csrfHash;
+                            // Update CSRF token in form
+                            $("#paymentProofUpdateForm input[name='<?= csrf_token() ?>']").val(csrfHash);
+                            // Hide the preview section
+                            $('#documentPreview').html('');
+                            $('#documentDeleteButton').addClass('d-none'); // Bootstrap class for display: none
+                            $('#existing_proof_date').addClass('d-none');
+                            $('#existing_proof_ref').addClass('d-none');
+                            $('#existing_notes').addClass('d-none');
 
-                fetch('<?= base_url('provider/invoice/delete_payment_proof') ?>', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: JSON.stringify(requestData)
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire(
-                                'Deleted!',
-                                'Payment proof has been deleted successfully.',
-                                'success'
-                            );
+                            // Show upload icon/info
+                            $('#uploadProofSectionIcon').show();
+                            $('#new_payment_date').show();
+                            $('#new_payment_ref').show();
+                            $('#new_notes').show();
 
-                            document.getElementById('documentPreviewSection').innerHTML = `
-                            <div class="text-center">
-                                <div class="document-icon mb-3">
-                                    <i class="fas fa-file-upload text-muted fa-5x"></i>
-                                </div>
-                                <h6 class="text-muted">No payment proof has been uploaded yet</h6>
-                            </div>
-                        `;
+                            // Show the upload form if needed
+                            $('#uploadProofSection').show();
+                            $('#uploadProofSectionSubmitBtn').show();
+                            // Optionally clear any old file value
+                            // document.getElementById('payment_proof')?.value = '';
                         } else {
-                            Swal.fire(
-                                'Error!',
-                                data.message || 'Failed to delete payment proof.',
-                                'error'
-                            );
+                            Swal.fire("Error!", response.message, "error");
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        Swal.fire(
-                            'Error!',
-                            'An error occurred while deleting the file.',
-                            'error'
-                        );
-                    });
+                    },
+                    error: function() {
+                        Swal.fire("Error!", "Something went wrong.", "error");
+                    }
+                });
+
             }
         });
     }
@@ -1177,34 +1100,21 @@
         document.getElementById('filePreview').style.display = 'none';
     }
 
-    // Show alert function
     function showAlert(type, message) {
-        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
-        const iconClass = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        const icon = type === 'success' ? 'success' : 'error';
+        const title = type === 'success' ? 'Success' : 'Error';
 
-        const alertHtml = `
-            <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
-                <i class="fas ${iconClass} me-2"></i>
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        `;
-
-        // Insert alert at the top of modal body
-        document.querySelector('.modal-body').insertAdjacentHTML('afterbegin', alertHtml);
-
-        // Auto remove after 5 seconds
-        setTimeout(() => {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.remove();
-            }
-        }, 5000);
+        Swal.fire({
+            icon: icon,
+            title: title,
+            text: message,
+            timer: 2000,
+            showConfirmButton: false
+        });
     }
 </script>
 
 <!-- Delete Invoice -->
-<!-- SweetAlert2 Flash Messages Handler -->
 <script>
     // Enhanced Delete Confirmation with SweetAlert2
     function confirmDelete(invoiceId, invoiceNumber, invoiceAmount, deleteUrl) {
@@ -1288,50 +1198,53 @@
 
 <script>
     $(document).ready(function() {
-        $('#paymentProofUpdateForm').on('submit', function(e) {
-            e.preventDefault();
+        // CSRF token initialization
+        let csrfName = '<?= csrf_token() ?>';
+        let csrfHash = '<?= csrf_hash() ?>';
 
-            let form = $('#paymentProofUpdateForm')[0];
-            let formData = new FormData(form);
+        // Delete file handler
+        $(document).on("click", ".deleteFile", function() {
+            let fileType = $(this).data("type"); // abstract or payment
+            let button = $(this);
 
-            $.ajax({
-                url: $(this).attr('action'),
-                method: 'POST',
-                data: formData,
-                processData: false, // Required for FormData
-                contentType: false, // Required for FormData
-                dataType: 'json',
-                beforeSend: function() {
-                    // Optional: show a loader or disable button
-                },
-                success: function(response) {
-                    if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success',
-                            text: response.message
-                        }).then(() => {
-                            $('#paymentProofModal').modal('hide');
-                            // Reload or update your table/data here
-                            location.reload();
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Failed',
-                            text: response.message
-                        });
-                    }
-                },
-                error: function(xhr) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Server Error',
-                        text: 'Something went wrong. Please try again.'
+            Swal.fire({
+                title: "Are you sure?",
+                text: "This action cannot be undone!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "<?= base_url('participant/research_project/delete-file') ?>",
+                        type: "POST",
+                        data: {
+                            [csrfName]: csrfHash,
+                            fileType: fileType
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire("Deleted!", response.message, "success");
+                                button.closest("div").html('<input type="file" class="form-control" name="' + fileType + '" required>');
+                                // Update CSRF token after request
+                                csrfName = response.csrfName;
+                                csrfHash = response.csrfHash;
+
+                                // Update CSRF token in form
+                                $("#updateForm input[name='<?= csrf_token() ?>']").val(csrfHash);
+                            } else {
+                                Swal.fire("Error!", response.message, "error");
+                            }
+                        },
+                        error: function() {
+                            Swal.fire("Error!", "Something went wrong.", "error");
+                        }
                     });
                 }
             });
         });
+
     });
-</script>
 </script>
