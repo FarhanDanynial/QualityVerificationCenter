@@ -218,7 +218,7 @@
       width: 150px;
       z-index: 100;
       background: linear-gradient(90deg, rgb(242, 243, 248) 0%, rgba(242, 243, 248, 0) 100%);
-      pointer-event: none;
+      /* pointer-event: none; */
     }
 
     .slider:before {
@@ -229,7 +229,7 @@
       width: 150px;
       z-index: 100;
       background: linear-gradient(90deg, rgba(242, 243, 248, 0) 0%, rgba(242, 243, 248, 1) 100%);
-      pointer-event: none;
+      /* pointer-event: none; */
     }
 
     /* Embedded Map */
@@ -482,10 +482,10 @@
                       <label class="form-check-label" for="rememberMe">Remember me</label>
                     </div> -->
                     <div class="text-center">
-                      <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
+                      <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-3 mb-0">Sign in</button>
                       <!-- <a href="<?= base_url('user/dashboard') ?>" type="button" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign in</a> -->
                       <a href="javascript:void(0);" class="register-btn btn btn-lg bg-gradient-danger btn-lg w-100 mt-1 mb-0">Register</a>
-
+                      <a href="<?= base_url('auth/appmpqua') ?>" class="mpqua-btn btn btn-lg bg-gradient-success btn-lg w-100 mt-5 mb-0">MPQUA Sign In Page</a>
                     </div>
                   </form>
                 </div>

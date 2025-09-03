@@ -14,6 +14,8 @@ class AuthUserModel extends Model
         'au_username',
         'au_password',
         'au_type',
+        'au_qu_id',
+        'au_plain_password',
     ];
 
     protected $useSoftDeletes = true;

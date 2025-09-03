@@ -24,8 +24,9 @@ class CreateProviderTable extends Migration
             'pvd_phone' => ['type' => 'VARCHAR', 'constraint' => 20],
             'pvd_verification' => ['type' => 'BOOLEAN', 'default' => false],
             'pvd_image' => [
-                'type' => 'TEXT',
-                'null' => true
+                'type'          => 'VARCHAR',
+                'constraint'    => 255,
+                'null'          => true
             ],
             'pvd_created_at' => [
                 'type' => 'TIMESTAMP',

@@ -17,9 +17,10 @@ class AssessorExpertiseFieldModel extends Model
         'aef_updated_at',
         'aef_deleted_at'
     ];
-
+    protected $useTimestamps = true;
     protected $useSoftDeletes = true;
     protected $createdField = 'aef_created_at';
     protected $updatedField = 'aef_updated_at';
     protected $deletedField = 'aef_deleted_at';
+    protected $dateFormat = 'datetime';
 }

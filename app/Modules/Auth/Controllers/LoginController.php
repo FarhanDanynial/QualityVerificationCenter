@@ -2,6 +2,7 @@
 
 namespace App\Modules\Auth\Controllers;
 
+use App\Models\MPQUAModel;
 use App\Models\AssessorModel;
 use App\Models\AuthUserModel;
 use App\Models\ProviderModel;
@@ -23,6 +24,9 @@ class LoginController extends BaseController
     // Provider
     protected $provider_model;
 
+    //MPQUA
+    protected $MPQUA_model;
+
     public function __construct()
     {
         $this->session = service('session');
@@ -35,6 +39,8 @@ class LoginController extends BaseController
         // Qvc Admin model
         $this->qvc_admin                      = new QvcAdminModel();
         $this->assessor_expertise_model       = new AssessorExpertiseFieldModel();
+        // MPQUA model
+        $this->MPQUA_model                    = new MPQUAModel();
     }
 
     public function sign_in()
@@ -85,6 +91,17 @@ class LoginController extends BaseController
                     ]);
                     $this->session->setFlashdata('success', 'Login successful!');
                     return redirect()->to('provider/dashboard'); // Redirect to the dashboard
+                } elseif ($user->au_type == 'mpqua') {
+                    $mpqua = $this->MPQUA_model->where('mpq_id', $user->au_user_id)->first();
+                    $this->session->set([
+                        'user_id'   => $mpqua->mpq_id,
+                        'user_name'   => $mpqua->mpq_address,
+                        'mpq_qu_id'   => $mpqua->mpq_qu_id,
+                        'logged_in' => true,
+
+                    ]);
+                    $this->session->setFlashdata('success', 'Login successful!');
+                    return redirect()->to('appmpqua/viewUni'); // Redirect to the dashboard
                 } elseif ($user->au_type == 'admin') {
                     $admin = $this->qvc_admin->where('qa_id', $user->au_user_id)->first();
                     $this->session->set([

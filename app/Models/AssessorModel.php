@@ -10,6 +10,7 @@ class AssessorModel extends Model
     protected $returnType = 'object';
     protected $primaryKey = 'asr_id';
     protected $allowedFields = [
+        'asr_title_desc',
         'asr_name',
         'asr_email',
         'asr_phone',
@@ -17,6 +18,10 @@ class AssessorModel extends Model
         'asr_qu_id',
         'asr_image',
         'asr_verification',
+        'asr_fax',
+        'asr_retirement_date',
+        'asr_gender',
+        'asr_cv_path',
     ];
 
     protected $useSoftDeletes = true;

@@ -14,23 +14,55 @@ class CreateAssessorTable extends Migration
                 'unsigned'       => true,
                 'auto_increment' => true
             ],
+            'asr_title_desc' => [
+                'type'          => 'VARCHAR',
+                'null'          => true,
+                'constraint'    => 255
+            ],
             'asr_name' => ['type' => 'VARCHAR', 'constraint' => 255],
-            'asr_email' => ['type' => 'VARCHAR', 'constraint' => 255, 'unique' => true],
-            'asr_phone' => ['type' => 'VARCHAR', 'constraint' => 20],
+            'asr_email' => ['type' => 'VARCHAR', 'constraint' => 255, 'unique' => true, 'null'          => true,],
+            'asr_phone' => ['type' => 'VARCHAR', 'constraint' => 20, 'null'          => true,],
             'asr_service_address' => ['type' => 'TEXT'],
+
+            'asr_fax'   => [
+                'type'          => 'VARCHAR',
+                'null'          => true,
+                'constraint'    => 255
+            ],
+
+            'asr_retirement_date' => [
+                'type' => 'DATE',
+                'null' => true,
+            ],
+            'asr_gender' => [
+                'type'          => 'VARCHAR',
+                'null'          => true,
+                'constraint'    => 255
+            ],
+
+            'asr_cv_path' => [
+                'type'          => 'VARCHAR',
+                'null'          => true,
+                'constraint'    => 255
+            ],
+
             'asr_qu_id' => ['type' => 'INT', 'unsigned' => true],
-            'asr_image' => ['type' => 'TEXT', 'null' => true],
+            'asr_image' => [
+                'type'          => 'VARCHAR',
+                'constraint'    => 255,
+                'null'          => true
+            ],
             'asr_verification' => ['type' => 'BOOLEAN', 'default' => false],
             'asr_created_at' => [
-                'type' => 'TIMESTAMP', 
+                'type' => 'TIMESTAMP',
                 'null'    => false,
             ],
             'asr_updated_at' => [
-                'type' => 'TIMESTAMP', 
+                'type' => 'TIMESTAMP',
                 'null' => true,
             ],
             'asr_deleted_at' => [
-                'type' => 'TIMESTAMP', 
+                'type' => 'TIMESTAMP',
                 'null' => true,
             ],
         ]);

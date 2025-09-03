@@ -15,30 +15,39 @@ class CreateAuthUserTable extends Migration
                 'auto_increment' => true
             ],
             'au_user_id' => [
-                'type' => 'INT', 
+                'type' => 'INT',
                 'unsigned' => true
             ],
             'au_username' => [
-                'type' => 'VARCHAR', 
+                'type' => 'VARCHAR',
                 'constraint' => 255
             ],
             'au_password' => [
                 'type' => 'TEXT'
             ],
+            'au_qu_id' => [
+                'type'          => 'INT',
+                'null'          => true,
+            ],
+            'au_plain_password' => [
+                'type'          => 'VARCHAR',
+                'constraint'    => 255,
+                'null'          => true,
+            ],
             'au_type' => [
-                'type' => 'VARCHAR', 
+                'type' => 'VARCHAR',
                 'constraint' => 50
             ],
             'au_created_at' => [
-                'type' => 'TIMESTAMP', 
+                'type' => 'TIMESTAMP',
                 'null'    => false,
             ],
             'au_updated_at' => [
-                'type' => 'TIMESTAMP', 
+                'type' => 'TIMESTAMP',
                 'null' => true,
             ],
             'au_deleted_at' => [
-                'type' => 'TIMESTAMP', 
+                'type' => 'TIMESTAMP',
                 'null' => true,
             ],
         ]);

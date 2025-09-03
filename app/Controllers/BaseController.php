@@ -122,4 +122,31 @@ abstract class BaseController extends Controller
 
         echo view('layout/main', $array);
     }
+
+    public function render_mpqua($view, $data)
+    {
+        $uri = service('uri');
+        $modules = $uri->getSegment(1);
+        $view_path = 'Modules\\' . $modules . '\\Views\\';
+        $array = [
+            'data'  => $data,
+            'view'  => $view_path . $view,
+        ];
+
+        echo view('mpqua_layout/main', $array);
+    }
+
+
+    public function render_AppList($view, $data)
+    {
+        $uri = service('uri');
+        $modules = $uri->getSegment(1);
+        $view_path = 'Modules\\' . $modules . '\\Views\\';
+        $array = [
+            'data'  => $data,
+            'view'  => $view_path . $view
+        ];
+
+        echo view('AppMPQUA/listAll', $array);
+    }
 }
