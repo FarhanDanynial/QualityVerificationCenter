@@ -125,11 +125,16 @@
                             <label for="fax" class="form-label">Fax</label>
                             <input type="text" class="form-control" id="fax" name="mpq_fax" value="<?= $user_info->mpq_fax ?>" required>
                         </div>
+                        <div class="col-6 mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="mpq_email" value="<?= $user_info->mpq_email ?>" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="email" class="form-label">Address</label>
+                            <input type="text" class="form-control" id="text" name="mpq_address" value="<?= $user_info->mpq_address ?>" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="mpq_email" value="<?= $user_info->mpq_email ?>" required>
-                    </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" onclick="showChangePasswordModal()" class="btn btn-warning mb-0" data-bs-dismiss="modal"><i class="fas fa-key" style="font-size: 1rem !important;"></i>&nbsp; Change password</button>
@@ -197,6 +202,7 @@ $nec_names = array_column($nec_counts, 'nec_name');
         e.preventDefault();
 
         const formData = new FormData(this);
+        console.log(formData);
 
         fetch("<?= base_url('appmpqua/update_profile') ?>", {
                 method: 'POST',

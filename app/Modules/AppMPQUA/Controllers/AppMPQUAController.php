@@ -61,6 +61,7 @@ class AppMPQUAController extends BaseController
         $female_assessors = $this->assessor_model->where('asr_gender', 'Female')->where('asr_deleted_at', null)->countAllResults();
 
         $university_list = $this->QVC_University_model->where('qu_type', 'Public University')->findAll();
+        $type_list_view = [];
 
         foreach ($assessor_list as &$assessor) {
             // Get all expertise for this assessor
@@ -87,7 +88,7 @@ class AppMPQUAController extends BaseController
 
             // Get all Type mappings for this assessor
             $type_mappings = $this->asrTypeMapping_model->where('atm_asr_id', $assessor->asr_id)->findAll();
-            $type_list_view = [];
+            
             foreach ($type_mappings as $tm) {
                 $type = $this->asrType_model->find($tm->atm_at_id);
                 if ($type) {
@@ -324,6 +325,7 @@ class AppMPQUAController extends BaseController
             // Store in public/uploads/profile
             $file->move(ROOTPATH . 'public/uploads/profile/', $newName);
             $data['mpq_image'] = 'uploads/profile/' . $newName; // Store relative path in DB
+            log_message('info', 'Profile image uploaded: ' . $data['mpq_image']);
         }
 
         if ($this->mpqua_model->update($user_id, $data)) {

@@ -85,6 +85,7 @@ class MPQUA_UniController extends BaseController
         $builder->where('assessor.asr_deleted_at', null); // Exclude soft-deleted
 
         $assessor_list = $builder->get()->getResult();
+        $type_list_view = [];
 
         foreach ($assessor_list as &$assessor) {
             // Get all expertise for this assessor
@@ -111,7 +112,7 @@ class MPQUA_UniController extends BaseController
 
             // Get all Type mappings for this assessor
             $type_mappings = $this->asrTypeMapping_model->where('atm_asr_id', $assessor->asr_id)->findAll();
-            $type_list_view = [];
+            
             foreach ($type_mappings as $tm) {
                 $type = $this->asrType_model->find($tm->atm_at_id);
                 if ($type) {
