@@ -539,6 +539,7 @@
                 document.getElementById('modalUniFax').innerText = data.asr_fax || '';
                 document.getElementById('modalUniEmail').innerText = data.asr_email || '';
                 document.getElementById('modalUniAddress').innerText = data.asr_service_address || '';
+                document.getElementById('modalUniRetireDate').innerText = data.asr_retirement_date || '';
                 document.getElementById('openEditModalBtn').setAttribute('data-asr-id', data.asr_id);
 
                 document.getElementById('modalUniCV').innerHTML = '';

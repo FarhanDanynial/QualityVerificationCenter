@@ -859,6 +859,7 @@
                     $('#modalTelephoneInput').val(data.asr_phone || '');
                     $('#modalFaxInput').val(data.asr_fax || '');
                     $('#modalAddressInput').val(data.asr_service_address || '');
+                    $('#modalRetirementInput').val(data.asr_retirement_date || '');
 
                     // type badges
                     if (data.type_list && data.type_list.length > 0) {
@@ -952,6 +953,7 @@
             e.preventDefault();
             const formData = new FormData(this);
             formData.append('csrf_test_name', $('input[name="csrf_test_name"]').val());
+            console.log('Submitting form with data:', Array.from(formData.entries()));
             Swal.fire({
                 title: 'Saving Assessor...',
                 text: 'Please wait while we save the assessor information.',

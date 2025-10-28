@@ -220,11 +220,18 @@
                                 Professional Information
                             </div>
                         
-                            <div class="info-row bg-light mb-2">
+                            <div class="info-row row mb-2">
                                 <div class="info-label fw-semibold text-muted">
                                     APP Type:&nbsp;
                                 </div>
                                 <div class="info-value" id="modalUniType"></div>
+                            </div>
+                        
+                            <div class="info-row bg-light mb-2">
+                                <div class="info-label fw-semibold text-muted">
+                                    Retirement Date:&nbsp;
+                                </div>
+                                <div class="info-value" id="modalUniRetireDate"></div>
                             </div>
 
                             <div class="info-row row mb-2">

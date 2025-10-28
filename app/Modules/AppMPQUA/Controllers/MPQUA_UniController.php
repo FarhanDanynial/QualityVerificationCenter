@@ -286,6 +286,7 @@ class MPQUA_UniController extends BaseController
         $asr_phone              = $this->request->getPost('asr_phone');
         $asr_fax                = $this->request->getPost('asr_fax');
         $asr_email              = $this->request->getPost('asr_email');
+        $asr_retirement_date    = $this->request->getPost('asr_retirement_date');
         $asr_service_address    = $this->request->getPost('asr_service_address');
         $expertise              = $this->request->getPost('expertise');
         $nec_detail_id          = $this->request->getPost('nec_detail');
@@ -330,6 +331,7 @@ class MPQUA_UniController extends BaseController
             'asr_cv_path'         => $cvPath, // Save path to DB
             'asr_image'           => $asr_path, // Save path to DB
             'asr_title_desc'      => $asr_title_desc,
+            'asr_retirement_date' => $asr_retirement_date,
         ];
 
         $this->assessor_model->insert($data);
@@ -511,6 +513,7 @@ class MPQUA_UniController extends BaseController
     $asr_phone             = $this->request->getPost('asr_phone');
     $asr_fax               = $this->request->getPost('asr_fax');
     $asr_email             = $this->request->getPost('asr_email');
+    $asr_retirement_date   = $this->request->getPost('asr_retirement_date');
     $asr_service_address   = $this->request->getPost('asr_service_address');
     $expertise             = $this->request->getPost('expertise');
     $nec_detail_id         = $this->request->getPost('nec_detail');
@@ -559,6 +562,7 @@ class MPQUA_UniController extends BaseController
         'asr_service_address' => $asr_service_address,
         'asr_cv_path'         => $cvPath,
         'asr_image'           => $imgPath,
+        'asr_retirement_date' => $asr_retirement_date,
     ];
 
     $this->assessor_model->update($assessor_id, $data);
