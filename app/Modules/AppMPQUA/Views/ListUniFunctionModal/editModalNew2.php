@@ -632,6 +632,7 @@
                 Swal.fire({ icon: 'info', title: 'Already Added', text: 'This type is already added.' });
                 return;
             }
+
             var badge = `
                 <div class="badge-item" data-type-val="${typeVal}">
                     <i class="fas fa-layer-group"></i>
@@ -641,8 +642,8 @@
                         <i class="fas fa-times"></i>
                     </button>
                     <input type="hidden" name="asr_type_multi[]" value="${typeVal}">
-                    <input type="hidden" name="atm_start_date[]" value="${startDate}">
-                    <input type="hidden" name="atm_end_date[]" value="${endDate}">
+                    <input type="hidden" class="type-start-date" name="atm_start_date[]" value="${startDate}">
+                    <input type="hidden" class="type-end-date" name="atm_end_date[]" value="${endDate}">
                 </div>
             `;
             $('#typeDisplayEdit').find('.no-selection').remove();
@@ -866,8 +867,21 @@
                         data.type_list.forEach(ty => {
                             let typeId = ty.at_id || ty.id || ty;
                             let type = ty.at_type || ty.type || ty;
-                            let startDate = ty.atm_start_date || ty.start || '';
+                            let startDate = ty.atm_start_date || ty.start || ''; // server may return dd-mm-yyyy
                             let endDate = ty.atm_end_date || ty.end || '';
+
+                            // convert dd-mm-yyyy to yyyy-mm-dd for hidden input (if needed)
+                            function toInputDate(d) {
+                                if (!d) return '';
+                                // detect dd-mm-yyyy (e.g. 03-09-2025) and convert
+                                const m = d.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+                                if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+                                // already yyyy-mm-dd or other -> return as-is
+                                return d;
+                            }
+                            const inputStart = toInputDate(startDate);
+                            const inputEnd = toInputDate(endDate);
+
                             var badge = `
                                 <div class="badge-item" data-type-val="${typeId}">
                                     <i class="fas fa-layer-group"></i>
@@ -877,8 +891,8 @@
                                         <i class="fas fa-times"></i>
                                     </button>
                                     <input type="hidden" name="asr_type_multi[]" value="${typeId}">
-                                    <input type="hidden" class="type-start-date" name="atm_start_date" value="${startDate}">
-                                    <input type="hidden" class="type-end-date" name="atm_end_date" value="${endDate}">
+                                    <input type="hidden" class="type-start-date" name="atm_start_date[]" value="${inputStart}">
+                                    <input type="hidden" class="type-end-date" name="atm_end_date[]" value="${inputEnd}">
                                 </div>
                             `;
                             $('#typeDisplayEdit').find('.no-selection').remove();
