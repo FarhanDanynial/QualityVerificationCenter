@@ -327,7 +327,15 @@
                                             <?php foreach ($type_list as $type): ?>
                                                 <option value="<?= $type->at_id ?>"><?= $type->at_type ?></option>
                                             <?php endforeach; ?>
+                                            <option value="other">Other</option>
                                         </select>
+                                    </div>
+                                    <!-- new: other type text input (hidden until 'Other' selected) -->
+                                    <div class="row mt-2" id="editTypeOtherRow">
+                                        <div class="col-12">
+                                            <label class="form-label">Specify other type</label>
+                                            <input type="text" id="editTypeOtherInput" class="form-control" placeholder="Please describe the other type">
+                                        </div>
                                     </div>
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -616,61 +624,104 @@
             });
         });
 
+        $('#editTypeOtherRow').hide();
+
+        $('#editType').on('change', function() {
+            var selectedVal = $(this).val();
+            console.log('Selected type value:', selectedVal);
+            if (selectedVal === 'other') {
+                $('#editTypeOtherRow').show();
+            } else {
+                $('#editTypeOtherRow').hide();
+                $('#editTypeOtherInput').val('');
+            }
+        });
+
         // Assessor Type badge logic (multiple)
         $('#addTypeBtnEdit').on('click', function() {
-            var typeVal = $('#editType').val();
-            var typeText = $('#editType option:selected').text();
+            var selectedVal = $('#editType').val();
+            var isOther = selectedVal === 'other';
+            var otherTypeDesc = isOther ? $('#editTypeOtherInput').val().trim() : null;
+            var typeId = isOther ? 'other' : selectedVal;
+            var typeText = isOther ? otherTypeDesc : $('#editType option:selected').text();
             var startDate = $('#modalStartInputEdit').val();
             var endDate = $('#modalEndInputEdit').val();
-            if (!typeVal) {
+
+            if (!typeId || (isOther && !otherTypeDesc)) {
                 Swal.fire({ icon: 'warning', title: 'Please select type', text: 'You must select a type before adding.' });
                 return;
             }
+
+            var uniqueKey = isOther ? ('other|' + otherTypeDesc) : ('id|' + typeId);
+
             var exists = false;
-            $('#typeDisplayEdit [data-type-val="' + typeVal + '"]').each(function() { exists = true; });
+            $('#typeDisplayEdit .badge-item').each(function() {
+                if ($(this).data('typeKey') === uniqueKey) {
+                    exists = true;
+                    return false;
+                }
+            });
             if (exists) {
                 Swal.fire({ icon: 'info', title: 'Already Added', text: 'This type is already added.' });
                 return;
             }
 
+            // Hidden inputs: keep arrays so backend reads consistently
+            var hiddenInputs = '';
+            if (isOther) {
+                hiddenInputs += `<input type="hidden" name="asr_type_multi[]" value="other">`;
+                hiddenInputs += `<input type="hidden" name="asr_type_other_text[]" value="${otherTypeDesc}">`;
+            } else {
+                hiddenInputs += `<input type="hidden" name="asr_type_multi[]" value="${typeId}">`;
+                hiddenInputs += `<input type="hidden" name="asr_type_other_text[]" value="">`;
+            }
+            hiddenInputs += `<input type="hidden" class="type-start-date" name="atm_start_date[]" value="${startDate}">`;
+            hiddenInputs += `<input type="hidden" class="type-end-date" name="atm_end_date[]" value="${endDate}">`;
+
+
             var badge = `
-                <div class="badge-item" data-type-val="${typeVal}">
+                <div class="badge-item" data-type-key="${uniqueKey}" data-type-isother="${isOther ? 1 : 0}">
                     <i class="fas fa-layer-group"></i>
-                    ${typeText}
+                    ${typeText || '-'}
                     <span class="ms-2"><i class="fas fa-calendar-alt"></i> ${startDate || '-'} to ${endDate || '-'}</span>
                     <button type="button" class="remove-btn delete-type-edit">
                         <i class="fas fa-times"></i>
                     </button>
-                    <input type="hidden" name="asr_type_multi[]" value="${typeVal}">
-                    <input type="hidden" class="type-start-date" name="atm_start_date[]" value="${startDate}">
-                    <input type="hidden" class="type-end-date" name="atm_end_date[]" value="${endDate}">
+                    ${hiddenInputs}
                 </div>
             `;
             $('#typeDisplayEdit').find('.no-selection').remove();
             $('#typeDisplayEdit').append(badge);
+
             $('#editType').val('').trigger('change');
             $('#modalStartInputEdit').val('').trigger('change');
             $('#modalEndInputEdit').val('').trigger('change');
             $('#modalStartInputEdit').prop('disabled', true);
             $('#modalEndInputEdit').prop('disabled', true);
             $('#addTypeBtnEdit').hide();
+            $('#editTypeOtherRow').hide();
         });
-        $(document).on('click', '.delete-type-edit', function() {
+        $(document).off('click.deleteType').on('click.deleteType', '.delete-type-edit', function() {
             var badge = $(this).closest('.badge-item');
-            badge.fadeOut(300, function() {
+            badge.fadeOut(200, function() {
                 $(this).remove();
                 if ($('#typeDisplayEdit .badge-item').length === 0) {
                     $('#typeDisplayEdit').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No type selected yet</div>');
                 }
-                // Log the remaining selected types with start and end date
-                let typeArray = [];
+                
+                // Log remaining types with clear flags
+                let remaining = [];
                 $('#typeDisplayEdit .badge-item').each(function() {
-                    typeArray.push({
-                        type: $(this).find('input[name="asr_type_multi[]"]').val(),
-                        start: $(this).find('.type-start-date').val(),
-                        end: $(this).find('.type-end-date').val()
+                    remaining.push({
+                        type_key: $(this).data('typeKey'),
+                        is_other: !!$(this).data('typeIsother'),
+                        type_id_or_text: $(this).find('input[name="asr_type_multi[]"]').val(),
+                        other_text: $(this).find('input[name="asr_type_other_text[]"]').val() || null,
+                        start: $(this).find('.type-start-date').val() || null,
+                        end: $(this).find('.type-end-date').val() || null
                     });
                 });
+                console.log('Remaining selected types (clear):', remaining);
             });
         });
 

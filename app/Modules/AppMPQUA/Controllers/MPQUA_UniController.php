@@ -566,6 +566,7 @@ class MPQUA_UniController extends BaseController
     $type_id               = $this->request->getPost('asr_type_multi');
     $atm_start_date        = $this->request->getPost('atm_start_date');
     $atm_end_date          = $this->request->getPost('atm_end_date');
+    $asr_type_other_text   = $this->request->getPost('asr_type_other_text');
 
     // --- Handle file upload ---
     $cvPath = null;
@@ -667,9 +668,33 @@ class MPQUA_UniController extends BaseController
         $type_data = [];
         foreach ($type_id as $idx => $ty_id) {
             if (trim($ty_id) !== "") {
+                $otherText = isset($asr_type_other_text[$idx]) ? trim($asr_type_other_text[$idx]) : '';
+                if ($otherText === '') {
+                    // skip empty other entries
+                    continue;
+                }
+
+                // try to find existing type (exact match)
+                $existingType = $this->asrType_model->where('at_type', $otherText)->first();
+
+                // If not found, insert new asr_type
+                if (!$existingType) {
+                    $insertData = [
+                        'at_type' => $otherText,
+                        'at_desc' => null,
+                    ];
+                    $this->asrType_model->insert($insertData);
+                    $newAtId = $this->asrType_model->getInsertID();
+                } else {
+                    $newAtId = $ty_id;
+                }
+
+                // use the resolved at_id for mapping
+                $atm_at_id_val = $newAtId;
+
                 $type_data[] = [
                     'atm_asr_id'     => $assessor_id,
-                    'atm_at_id'      => $ty_id,
+                    'atm_at_id'      => $atm_at_id_val,
                     'atm_start_date' => $atm_start_date[$idx] ?? null,
                     'atm_end_date'   => $atm_end_date[$idx] ?? null,
                     'atm_updated_at' => date('Y-m-d H:i:s'),
