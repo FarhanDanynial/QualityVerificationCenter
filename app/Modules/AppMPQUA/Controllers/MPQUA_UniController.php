@@ -111,14 +111,28 @@ class MPQUA_UniController extends BaseController
             $assessor->nec_detail_list = $nec_detail_list;
 
             // Get all Type mappings for this assessor
+            // reset per-assessor list so values don't leak between rows
+            $type_list_view = [];
             $type_mappings = $this->asrTypeMapping_model->where('atm_asr_id', $assessor->asr_id)->findAll();
-            
             foreach ($type_mappings as $tm) {
-                $type = $this->asrType_model->find($tm->atm_at_id);
-                if ($type) {
+                // If mapping points to a known type id
+                if (!empty($tm->atm_at_id)) {
+                    $type = $this->asrType_model->find($tm->atm_at_id);
+                    if ($type) {
+                        $type_list_view[] = [
+                            'at_id' => $type->at_id,
+                            'at_type' => $type->at_type,
+                            'atm_start_date' => $tm->atm_start_date ?? null,
+                            'atm_end_date' => $tm->atm_end_date ?? null,
+                        ];
+                    }
+                // If mapping stored "other" text in atm_other
+                } elseif (!empty($tm->atm_other)) {
                     $type_list_view[] = [
-                        'at_id' => $type->at_id,
-                        'at_type' => $type->at_type
+                        'at_id' => null,
+                        'at_type' => $tm->atm_other,
+                        'atm_start_date' => $tm->atm_start_date ?? null,
+                        'atm_end_date' => $tm->atm_end_date ?? null,
                     ];
                 }
             }
@@ -294,6 +308,7 @@ class MPQUA_UniController extends BaseController
         $asr_title_desc         = $this->request->getPost('asr_title_desc');
         $atm_start_date         = $this->request->getPost('atm_start_date');
         $atm_end_date           = $this->request->getPost('atm_end_date');
+        $asr_type_other_text    = $this->request->getPost('asr_type_other_text'); // <-- new
 
         $asr_path = null;
         $imgFile = $this->request->getFile('asr_image');
@@ -381,9 +396,40 @@ class MPQUA_UniController extends BaseController
                 if (trim($ty_id) !== "") {
                     $startRaw = $atm_start_date[$idx] ?? null;
                     $endRaw   = $atm_end_date[$idx] ?? null;
+
+                    // If user selected "other", insert (or reuse) a row in asr_types and use its id
+                    if ($ty_id === 'other') {
+                        $otherText = isset($asr_type_other_text[$idx]) ? trim($asr_type_other_text[$idx]) : '';
+                        if ($otherText === '') {
+                            // skip empty other entries
+                            continue;
+                        }
+
+                        // try to find existing type (exact match)
+                        $existingType = $this->asrType_model->where('at_type', $otherText)->first();
+
+                        // If not found, insert new asr_type
+                        if (!$existingType) {
+                            $insertData = [
+                                'at_type' => $otherText,
+                                'at_desc' => null,
+                            ];
+                            $this->asrType_model->insert($insertData);
+                            $newAtId = $this->asrType_model->getInsertID();
+                        } else {
+                            $newAtId = $existingType->at_id;
+                        }
+
+                        // use the resolved at_id for mapping
+                        $atm_at_id_val = $newAtId;
+                    } else {
+                        // normal existing type id
+                        $atm_at_id_val = (int) $ty_id;
+                    }
+
                     $type_data[] = [
                         'atm_asr_id' => $assessor_id,
-                        'atm_at_id'  => $ty_id,
+                        'atm_at_id'  => $atm_at_id_val,
                         'atm_start_date'=> $startRaw ? date('Y-m-d', strtotime($startRaw)) : null,
                         'atm_end_date'  => $endRaw ? date('Y-m-d', strtotime($endRaw)) : null,
                     ];

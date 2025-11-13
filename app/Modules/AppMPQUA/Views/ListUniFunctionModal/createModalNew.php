@@ -351,7 +351,15 @@
                                             <?php foreach ($type_list as $type): ?>
                                                 <option value="<?= $type->at_id ?>"><?= $type->at_type ?></option>
                                             <?php endforeach; ?>
+                                            <option value="other">Other</option>
                                         </select>
+                                    </div>
+                                    <!-- new: other type text input (hidden until 'Other' selected) -->
+                                    <div class="row mt-2" id="addTypeOtherRow">
+                                        <div class="col-12">
+                                            <label class="form-label">Specify other type</label>
+                                            <input type="text" id="addTypeOtherInput" class="form-control" placeholder="Please describe the other type">
+                                        </div>
                                     </div>
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -363,6 +371,7 @@
                                             <input type="date" name="atm_end_date" id="modalEndInputAdd" class="form-control" disabled>
                                         </div>
                                     </div>
+
                                     <div class="col-2">
                                         <button type="button" class="btn btn-gradient w-100 mt-3" id="addTypeBtnAdd" style="display: none;">
                                             <i class="fas fa-plus"></i> Add
@@ -663,72 +672,121 @@
             $('#addExpertise').val('').trigger('change');
         });
 
+        $('#addTypeOtherRow').hide();
+
+        $('#addTypeAdd').on('change', function() {
+            var selectedVal = $(this).val();
+            console.log('Selected type value:', selectedVal);
+            if (selectedVal === 'other') {
+                $('#addTypeOtherRow').show();
+            } else {
+                $('#addTypeOtherRow').hide();
+                $('#addTypeOtherInput').val('');
+            }
+        });
+
         // Assessor Type badge logic (multiple)
-        $('#addTypeBtnAdd').on('click', function() {
-            var typeVal = $('#addTypeAdd').val();
-            var typeText = $('#addTypeAdd option:selected').text();
+        // safe binding: ensure we don't double-bind
+        $('#addTypeBtnAdd').off('click').on('click', function() {
+            var selectedVal = $('#addTypeAdd').val();               // actual select value (id or 'other')
+            var isOther = selectedVal === 'other';
+            var otherTypeDesc = isOther ? $('#addTypeOtherInput').val().trim() : null;
+            var typeId = isOther ? 'other' : selectedVal;
+            var typeText = isOther ? otherTypeDesc : $('#addTypeAdd option:selected').text();
             var startDate = $('#modalStartInputAdd').val();
             var endDate = $('#modalEndInputAdd').val();
-            if (!typeVal) {
-                Swal.fire({ icon: 'warning', title: 'Please select type', text: 'You must select a type before adding.' });
+
+            if (!typeId || (isOther && !otherTypeDesc)) {
+                Swal.fire({ icon: 'warning', title: 'Please select type', text: isOther ? 'Please describe the other type.' : 'You must select a type before adding.' });
                 return;
             }
+
+            // create a unique key to detect duplicates (include other text for 'other')
+            var uniqueKey = isOther ? ('other|' + otherTypeDesc) : ('id|' + typeId);
+
             var exists = false;
-            $('#typeDisplayAdd [data-type-val="' + typeVal + '"]').each(function() { exists = true; });
+            $('#typeDisplayAdd .badge-item').each(function() {
+                if ($(this).data('typeKey') === uniqueKey) {
+                    exists = true;
+                    return false;
+                }
+            });
             if (exists) {
                 Swal.fire({ icon: 'info', title: 'Already Added', text: 'This type is already added.' });
                 return;
             }
+
+            // Hidden inputs: keep arrays so backend reads consistently
+            var hiddenInputs = '';
+            if (isOther) {
+                hiddenInputs += `<input type="hidden" name="asr_type_multi[]" value="other">`;
+                hiddenInputs += `<input type="hidden" name="asr_type_other_text[]" value="${otherTypeDesc}">`;
+            } else {
+                hiddenInputs += `<input type="hidden" name="asr_type_multi[]" value="${typeId}">`;
+                hiddenInputs += `<input type="hidden" name="asr_type_other_text[]" value="">`;
+            }
+            hiddenInputs += `<input type="hidden" class="type-start-date" name="atm_start_date[]" value="${startDate}">`;
+            hiddenInputs += `<input type="hidden" class="type-end-date" name="atm_end_date[]" value="${endDate}">`;
+
             var badge = `
-                <div class="badge-item" data-type-val="${typeVal}">
+                <div class="badge-item" data-type-key="${uniqueKey}" data-type-isother="${isOther ? 1 : 0}">
                     <i class="fas fa-layer-group"></i>
-                    ${typeText}
+                    ${typeText || '-'}
                     <span class="ms-2"><i class="fas fa-calendar-alt"></i> ${startDate || '-'} to ${endDate || '-'}</span>
                     <button type="button" class="remove-btn delete-type-add">
                         <i class="fas fa-times"></i>
                     </button>
-                    <input type="hidden" name="asr_type_multi[]" value="${typeVal}">
-                    <input type="hidden" class="type-start-date" name="atm_start_date" value="${startDate}">
-                    <input type="hidden" class="type-end-date" name="atm_end_date" value="${endDate}">
+                    ${hiddenInputs}
                 </div>
             `;
             $('#typeDisplayAdd').find('.no-selection').remove();
             $('#typeDisplayAdd').append(badge);
+
+            // reset controls
             $('#addTypeAdd').val('').trigger('change');
-            $('#modalStartInputAdd').val('').trigger('change');
-            $('#modalEndInputAdd').val('').trigger('change');
-            $('#modalStartInputAdd').prop('disabled', true);
-            $('#modalEndInputAdd').prop('disabled', true);
+            $('#modalStartInputAdd').val('').trigger('change').prop('disabled', true);
+            $('#modalEndInputAdd').val('').trigger('change').prop('disabled', true);
+            $('#addTypeOtherRow').hide();
+            $('#addTypeOtherInput').val('');
             $('#addTypeBtnAdd').hide();
 
-            // Log the array of selected types with start and end date
+            // Log clearly showing difference between normal and 'other' types
             let typeArray = [];
             $('#typeDisplayAdd .badge-item').each(function() {
                 typeArray.push({
-                    type: $(this).find('input[name="asr_type_multi[]"]').val(),
-                    start: $(this).find('.type-start-date').val(),
-                    end: $(this).find('.type-end-date').val()
+                    type_key: $(this).data('typeKey'),
+                    is_other: !!$(this).data('typeIsother'),
+                    type_id_or_text: $(this).find('input[name="asr_type_multi[]"]').val(),
+                    other_text: $(this).find('input[name="asr_type_other_text[]"]').val() || null,
+                    start: $(this).find('.type-start-date').val() || null,
+                    end: $(this).find('.type-end-date').val() || null
                 });
             });
-            console.log('Selected types:', typeArray);
+            console.log('Selected types (clear):', typeArray);
         });
-        $(document).on('click', '.delete-type-add', function() {
+
+        // remove handler - safe namespaced binding
+        $(document).off('click.deleteType').on('click.deleteType', '.delete-type-add', function() {
             var badge = $(this).closest('.badge-item');
-            badge.fadeOut(300, function() {
+            badge.fadeOut(200, function() {
                 $(this).remove();
                 if ($('#typeDisplayAdd .badge-item').length === 0) {
                     $('#typeDisplayAdd').html('<div class="no-selection"><i class="fas fa-info-circle me-2"></i>No type selected yet</div>');
                 }
-                // Log the remaining selected types with start and end date
-                let typeArray = [];
+
+                // Log remaining types with clear flags
+                let remaining = [];
                 $('#typeDisplayAdd .badge-item').each(function() {
-                    typeArray.push({
-                        type: $(this).find('input[name="asr_type_multi[]"]').val(),
-                        start: $(this).find('.type-start-date').val(),
-                        end: $(this).find('.type-end-date').val()
+                    remaining.push({
+                        type_key: $(this).data('typeKey'),
+                        is_other: !!$(this).data('typeIsother'),
+                        type_id_or_text: $(this).find('input[name="asr_type_multi[]"]').val(),
+                        other_text: $(this).find('input[name="asr_type_other_text[]"]').val() || null,
+                        start: $(this).find('.type-start-date').val() || null,
+                        end: $(this).find('.type-end-date').val() || null
                     });
                 });
-                console.log('Remaining selected types:', typeArray);
+                console.log('Remaining selected types (clear):', remaining);
             });
         });
 
@@ -868,76 +926,39 @@
             }
         });
 
+        // when type select changes: enable dates and show other input when needed
         $('#addTypeAdd').on('change', function() {
+            var val = $(this).val();
+            // enable date inputs for both normal and other
             $('#modalStartInputAdd').prop('disabled', false);
             $('#modalEndInputAdd').prop('disabled', false);
-            
+
+            if (val === 'other') {
+                $('#addTypeOtherRow').show();
+                $('#addTypeOtherInput').focus();
+            } else {
+                $('#addTypeOtherRow').hide();
+                $('#addTypeOtherInput').val('');
+            }
         });
 
         $('#modalEndInputAdd').on('change', function() {
             $('#addTypeBtnAdd').show();
         });
+    });
 
-        // Preview selected profile picture
-        $('#profilePicture').on('change', function(e) {
-            const file = this.files[0];
-            const previewArea = $(this).closest('.file-upload-area');
-            previewArea.find('.image-preview').remove();
-
-            if (file && file.type.match('image.*')) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    const img = $('<img class="image-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
-                    img.attr('src', evt.target.result);
-                    previewArea.append(img);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        // Preview selected CV file
-        $('#cvFile').on('change', function(e) {
-            const file = this.files[0];
-            const previewArea = $(this).closest('.file-upload-area');
-            previewArea.find('.cv-preview').remove();
-
-            if (file) {
-                let preview;
-                if (file.type === 'application/pdf') {
-                    preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-pdf fa-2x text-danger"></i><div>' + file.name + '</div></div>');
-                } else if (file.type.match('image.*')) {
-                    // Show image preview for image CVs
-                    const reader = new FileReader();
-                    reader.onload = function(evt) {
-                        const img = $('<img class="cv-preview mt-2 mb-2" style="max-width:120px; max-height:120px; border-radius:8px; display:block; margin:auto;">');
-                        img.attr('src', evt.target.result);
-                        previewArea.append(img);
-                    };
-                    reader.readAsDataURL(file);
-                    return;
-                } else {
-                    preview = $('<div class="cv-preview mt-2 mb-2 text-center"><i class="fas fa-file-alt fa-2x"></i><div>' + file.name + '</div></div>');
-                }
-                previewArea.append(preview);
-            }
-        });
-
-        // Form submission
+    // Form submission
         $('#addAssessorForm').on('submit', function(e) {
             e.preventDefault();
-
             const formData = new FormData(this);
             formData.append('csrf_test_name', $('input[name="csrf_test_name"]').val());
-            
+            console.log('Submitting form with data:', Array.from(formData.entries()));
             Swal.fire({
-                title: 'Saving Assessor...',
-                text: 'Please wait while we save the assessor information.',
+                title: 'Creating Assessor...',
+                text: 'Please wait while we create the assessor information.',
                 allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
+                didOpen: () => { Swal.showLoading(); }
             });
-            
             fetch("<?= base_url('appmpqua/createAssessor') ?>", {
                 method: 'POST',
                 body: formData
@@ -948,15 +969,13 @@
                     Swal.fire({
                         icon: 'success',
                         title: 'Success',
-                        text: data.message,
-                    }).then(() => {
-                        location.reload();
-                    });
+                        text: data.message ,
+                    }).then(() => { location.reload(); });
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error',
-                        text: data.message || 'Failed to update profile.',
+                        text: data.message || 'Failed to create assessor.',
                     });
                 }
             })
@@ -968,5 +987,4 @@
                 });
             });
         });
-    });
 </script>
