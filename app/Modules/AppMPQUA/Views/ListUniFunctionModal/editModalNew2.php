@@ -628,7 +628,6 @@
 
         $('#editType').on('change', function() {
             var selectedVal = $(this).val();
-            console.log('Selected type value:', selectedVal);
             if (selectedVal === 'other') {
                 $('#editTypeOtherRow').show();
             } else {
@@ -713,7 +712,6 @@
                 end: $(this).find('.type-end-date').val() || null
             });
         });
-        console.log('Selected types (clear):', typeArray);
 
         $(document).off('click.deleteType').on('click.deleteType', '.delete-type-edit', function() {
             var badge = $(this).closest('.badge-item');
@@ -735,7 +733,6 @@
                         end: $(this).find('.type-end-date').val() || null
                     });
                 });
-                console.log('Remaining selected types (clear):', remaining);
             });
         });
 
