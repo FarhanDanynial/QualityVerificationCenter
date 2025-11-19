@@ -665,39 +665,60 @@ class MPQUA_UniController extends BaseController
 
     // Then insert new types
     if ($type_id && is_array($type_id)) {
+        $nextAtId = null;
         $type_data = [];
         foreach ($type_id as $idx => $ty_id) {
             if (trim($ty_id) !== "") {
-                $otherText = isset($asr_type_other_text[$idx]) ? trim($asr_type_other_text[$idx]) : '';
-                if ($otherText === '') {
-                    // skip empty other entries
-                    continue;
-                }
+                $startRaw = $atm_start_date[$idx] ?? null;
+                $endRaw   = $atm_end_date[$idx] ?? null;
 
-                // try to find existing type (exact match)
-                $existingType = $this->asrType_model->where('at_type', $otherText)->first();
+                // If user selected "other", insert or reuse a row in asr_types
+                if ($ty_id === 'other' || $ty_id === 'otherType') {
+                    $otherText = isset($asr_type_other_text[$idx]) ? trim($asr_type_other_text[$idx]) : '';
+                    if ($otherText === '') {
+                        continue;
+                    }
+                
+                    $db = \Config\Database::connect();
+                    $db->transStart();
 
-                // If not found, insert new asr_type
-                if (!$existingType) {
+                    // Get next at_id
+                    $result = $db->query('SELECT COALESCE(MAX(at_id), 0) AS maxid FROM qvc_upsi.asr_types FOR UPDATE');
+                    if ($result === false) {
+                        $db->transRollback();
+                        continue;
+                    }
+
+                    $row = $result->getRow();
+                    $nextAtId = ((int) ($row->maxid ?? 0)) + 1;
+
+                    // Insert new asr_type
                     $insertData = [
+                        'at_id'   => $nextAtId,
                         'at_type' => $otherText,
                         'at_desc' => null,
                     ];
-                    $this->asrType_model->insert($insertData);
-                    $newAtId = $this->asrType_model->getInsertID();
-                } else {
-                    $newAtId = $ty_id;
-                }
+                    $ins = $db->table('qvc_upsi.asr_types')->insert($insertData);
 
-                // use the resolved at_id for mapping
-                $atm_at_id_val = $newAtId;
+                    $db->transComplete();
+                    if ($db->transStatus() === false || $ins === false) {
+                        if ($db->transStatus() === false) {
+                            $db->transRollback();
+                        }
+                        continue;
+                    }
+
+                    $atm_at_id_val = $nextAtId;
+                } else {
+                    // Normal existing type id
+                    $atm_at_id_val = (int) $ty_id;
+                }
 
                 $type_data[] = [
                     'atm_asr_id'     => $assessor_id,
                     'atm_at_id'      => $atm_at_id_val,
-                    'atm_start_date' => $atm_start_date[$idx] ?? null,
-                    'atm_end_date'   => $atm_end_date[$idx] ?? null,
-                    'atm_updated_at' => date('Y-m-d H:i:s'),
+                    'atm_start_date' => $startRaw ? date('Y-m-d', strtotime($startRaw)) : null,
+                    'atm_end_date'   => $endRaw ? date('Y-m-d', strtotime($endRaw)) : null,
                 ];
             }
         }

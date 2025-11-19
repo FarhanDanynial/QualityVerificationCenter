@@ -638,7 +638,7 @@
         });
 
         // Assessor Type badge logic (multiple)
-        $('#addTypeBtnEdit').on('click', function() {
+        $('#addTypeBtnEdit').off('click').on('click', function() {
             var selectedVal = $('#editType').val();
             var isOther = selectedVal === 'other';
             var otherTypeDesc = isOther ? $('#editTypeOtherInput').val().trim() : null;
@@ -701,6 +701,20 @@
             $('#addTypeBtnEdit').hide();
             $('#editTypeOtherRow').hide();
         });
+
+        let typeArray = [];
+        $('#typeDisplayEdit .badge-item').each(function() {
+            typeArray.push({
+                type_key: $(this).data('typeKey'),
+                is_other: !!$(this).data('typeIsother'),
+                type_id_or_text: $(this).find('input[name="asr_type_multi[]"]').val(),
+                other_text: $(this).find('input[name="asr_type_other_text[]"]').val() || null,
+                start: $(this).find('.type-start-date').val() || null,
+                end: $(this).find('.type-end-date').val() || null
+            });
+        });
+        console.log('Selected types (clear):', typeArray);
+
         $(document).off('click.deleteType').on('click.deleteType', '.delete-type-edit', function() {
             var badge = $(this).closest('.badge-item');
             badge.fadeOut(200, function() {
