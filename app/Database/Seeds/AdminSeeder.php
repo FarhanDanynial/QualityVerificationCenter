@@ -30,6 +30,17 @@ class AdminSeeder extends Seeder
                 'qa_verification'   => 'true',
                 'qa_created_at'     => date('Y-m-d H:i:s')
             ],
+
+            [
+                'qa_name'           => 'Admin MPQUA',
+                'qa_email'          => 'admin@gmail.com',
+                'qa_start_date'     => '2017-01-01',
+                'qa_expired_date'   => '2050-01-01',
+                'qa_qu_id'          => '14',
+                'qa_level'          => 'admin',
+                'qa_verification'   => 'true',
+                'qa_created_at'     => date('Y-m-d H:i:s')
+            ],
         ];
 
         $this->db->table('qvc_upsi.qvc_admin')->insertBatch($data_admin);
@@ -48,6 +59,15 @@ class AdminSeeder extends Seeder
                 'au_user_id'        => '2',
                 'au_username'       => 'pengarah_bpq',
                 'au_password'       => '$2y$10$7rG/S2S2EK17NDSCYsvnieKPrswXyP8jLNYdC1qcSgrtPc4i0VbjK',
+                'au_qu_id'          => '14',
+                'au_type'           => 'admin',
+                'au_created_at'     => date('Y-m-d H:i:s')
+            ],
+
+            [
+                'au_user_id'        => '3',
+                'au_username'       => 'adminmpqua',
+                'au_password'       => '$2y$10$WQTu1MgTCTentDOFDQ7JLeV0rIF4w9n90890kgint19IVEOi/Da/e',
                 'au_qu_id'          => '14',
                 'au_type'           => 'admin',
                 'au_created_at'     => date('Y-m-d H:i:s')

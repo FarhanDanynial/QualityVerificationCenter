@@ -4,6 +4,7 @@ namespace App\Modules\Auth\Controllers;
 
 use App\Models\MPQUAModel;
 use App\Models\AuthUserModel;
+use App\Models\QvcAdminModel;
 use App\Controllers\BaseController;
 
 class LoginMPQUAController extends BaseController
@@ -12,6 +13,7 @@ class LoginMPQUAController extends BaseController
     protected $auth_user_model;
     //MPQUA
     protected $MPQUA_model;
+    protected $qvc_admin;
 
     public function __construct()
     {
@@ -19,6 +21,7 @@ class LoginMPQUAController extends BaseController
         // Auth User model
         $this->auth_user_model                = new AuthUserModel();
         $this->MPQUA_model                    = new MPQUAModel();
+        $this->qvc_admin                      = new QvcAdminModel();
 
     }
 
@@ -28,10 +31,8 @@ class LoginMPQUAController extends BaseController
         $data = [
             'title'    => 'mpqua'
         ];
-        $this->render_auth('appmpqua/sign_in', $data);
+        $this->render_auth('sign_in', $data);
     }
-
-
 
     public function attempt_login_MPQUA()
     {
@@ -55,8 +56,18 @@ class LoginMPQUAController extends BaseController
                     ]);
                     $this->session->setFlashdata('success', 'Login successful!');
                     return redirect()->to('appmpqua/profile'); // Redirect to the dashboard
+                } elseif ($user->au_type == 'admin') {
+                    $admin = $this->qvc_admin->where('qa_id', $user->au_user_id)->first();
+                    $this->session->set([
+                        'user_id'   => $admin->qa_id,
+                        'user_name'   => $admin->qa_name,
+                        'logged_in' => true,
+
+                    ]);
+                    $this->session->setFlashdata('success', 'Login successful!');
+                    return redirect()->to('qvcAdmin/mpqua/list'); // Redirect to the dashboard
                 }
-            } else {
+            } else  {
                 $this->session->setFlashdata('error', 'Invalid password.');
                 return redirect()->back();
             }

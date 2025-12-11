@@ -70,33 +70,6 @@ abstract class BaseController extends Controller
         echo view('layout/auth', $array);
     }
 
-    // Provider render
-    public function render_provider($view, $data)
-    {
-        $uri = service('uri');
-        $modules = $uri->getSegment(1);
-        $view_path = 'Modules\\' . $modules . '\\Views\\';
-        $array = [
-            'data'  => $data,
-            'view'  => $view_path . $view
-        ];
-
-        echo view('provider_layout/main', $array);
-    }
-
-    public function render_assessor($view, $data)
-    {
-        $uri = service('uri');
-        $modules = $uri->getSegment(1);
-        $view_path = 'Modules\\' . $modules . '\\Views\\';
-        $array = [
-            'data'  => $data,
-            'view'  => $view_path . $view
-        ];
-
-        echo view('assessor_layout/main', $array);
-    }
-
     public function render_admin($view, $data)
     {
         $uri = service('uri');
@@ -108,19 +81,6 @@ abstract class BaseController extends Controller
         ];
 
         echo view('admin_layout/main', $array);
-    }
-
-    public function render_super_admin($view, $data)
-    {
-        $uri = service('uri');
-        $modules = $uri->getSegment(1);
-        $view_path = 'Modules\\' . $modules . '\\Views\\';
-        $array = [
-            'data'  => $data,
-            'view'  => $view_path . $view
-        ];
-
-        echo view('layout/main', $array);
     }
 
     public function render_mpqua($view, $data)
@@ -135,7 +95,6 @@ abstract class BaseController extends Controller
 
         echo view('mpqua_layout/main', $array);
     }
-
 
     public function render_AppList($view, $data)
     {

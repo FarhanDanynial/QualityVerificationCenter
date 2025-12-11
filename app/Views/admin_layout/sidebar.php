@@ -52,30 +52,6 @@ $current = uri_string(); // e.g., 'provider/dashboard'
         <h6 class="ps-4  ms-2 text-uppercase text-xs font-weight-bolder opacity-6">ADMIN SECTION</h6>
       </li>
       <li class="nav-item">
-        <a data-bs-toggle="collapse" href="#admin_SB_Section" class="nav-link  <?= strpos($current, 'qvcAdmin/samc') !== false ||  strpos($current, 'qvcAdmin/invoice') !== false ? 'active' : '' ?>" aria-controls="admin_SB_Section" role="button" aria-expanded="false">
-          <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center  me-2">
-            <i class="fas fa-cog <?= strpos($current, 'qvcAdmin/samc') !== false ||  strpos($current, 'qvcAdmin/invoice') !== false ? '' : 'text-dark' ?>" style=" font-size: 12px;"></i>
-          </div>
-          <span class="nav-link-text ms-1">Admin Section</span>
-        </a>
-        <div class="collapse <?= strpos($current, 'qvcAdmin/samc') !== false ||  strpos($current, 'qvcAdmin/invoice') !== false ? 'show' : '' ?>" id="admin_SB_Section">
-          <ul class="nav ms-4 ps-3">
-            <li class="nav-item ">
-              <a class="nav-link <?= strpos($current, 'qvcAdmin/samc/samc_management') !== false ? 'active' : '' ?>" href="<?= base_url() ?>qvcAdmin/samc/samc_management">
-                <span class="sidenav-mini-icon"> M </span>
-                <span class="sidenav-normal"> SAMC Management <b class="caret"></b></span>
-              </a>
-            </li>
-            <li class="nav-item ">
-              <a class="nav-link <?= strpos($current, 'qvcAdmin/invoice/invoice_management') !== false ? 'active' : '' ?>" href="<?= base_url() ?>qvcAdmin/invoice/invoice_management">
-                <span class="sidenav-mini-icon"> I </span>
-                <span class="sidenav-normal"> Invoice Management <b class="caret"></b></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </li>
-      <li class="nav-item">
         <a data-bs-toggle="collapse" href="#mpqua_SB_Section" class="nav-link " aria-controls="mpqua_SB_Section" role="button" aria-expanded="false">
           <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center d-flex align-items-center justify-content-center  me-2">
             <svg width="12px" height="12px" viewBox="0 0 42 42" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -118,18 +94,5 @@ $current = uri_string(); // e.g., 'provider/dashboard'
     </ul>
   </div>
   <div class="sidenav-footer mx-3 mt-3 pt-3">
-    <div class="card card-background shadow-none card-background-mask-secondary" id="sidenavCard">
-      <div class="full-background" style="background-image: url('<?= base_url() ?>assets/img/curved-images/white-curved.jpg')"></div>
-      <div class="card-body text-start p-3 w-100">
-        <div class="icon icon-shape icon-sm bg-white shadow text-center mb-3 d-flex align-items-center justify-content-center border-radius-md">
-          <i class="ni ni-diamond text-dark text-gradient text-lg top-0" aria-hidden="true" id="sidenavCardIcon"></i>
-        </div>
-        <div class="docs-info">
-          <h6 class="text-white up mb-0">Need help?</h6>
-          <p class="text-xs font-weight-bold">Please check our docs</p>
-          <a href="https://www.creative-tim.com/learning-lab/bootstrap/overview/soft-ui-dashboard" target="_blank" class="btn btn-white btn-sm w-100 mb-0">Documentation</a>
-        </div>
-      </div>
-    </div>
   </div>
 </aside>
