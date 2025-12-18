@@ -7,7 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 // $routes->get('/', 'Home::index');
 $routes->get('/', function () {
-    return redirect()->to('/auth/appmpqua');
+    return redirect()->to('/auth');
 });
 
 foreach (glob(APPPATH . 'Modules/*/Config/Routes.php') as $file) {
